@@ -8,7 +8,32 @@ import {
   MoveUpRight, MapPin, Wallet, Calendar, ExternalLink, TrendingUp 
 } from 'lucide-react';
 
-// --- Updated Dropdown Data Structure to match your images ---
+// ─── Route map: dropdown link text → React Router path ────────────────────────
+const LINK_ROUTES = {
+  // Jobs > Top Locations
+  "Work from home": "/jobs/wfh",
+  "Jobs in Bangalore": "/jobs/bangalore",
+  "Jobs in Delhi": "/jobs/delhi",
+  "Jobs in Hyderabad": "/jobs/hyderabad",
+  "Jobs in Mumbai": "/jobs/mumbai",
+  "Jobs in Pune": "/jobs/pune",
+  "Jobs in Chennai": "/jobs/chennai",
+  "Jobs in Kolkata": "/jobs/kolkata",
+  "Jobs in Gurgaon": "/jobs/gurgaon",
+  "Jobs in Noida": "/jobs/noida",
+  "Jobs in Jaipur": "/jobs/jaipur",
+  // Internships > Top Locations
+  "Internship in Bangalore": "/internships/bangalore",
+  "Internship in Delhi": "/internships/delhi",
+  "Internship in Hyderabad": "/internships/hyderabad",
+  "Internship in Mumbai": "/internships/mumbai",
+  "Internship in Chennai": "/internships/chennai",
+  "Internship in Pune": "/internships/pune",
+  "Internship in Kolkata": "/internships/kolkata",
+  "Internship in Jaipur": "/internships/jaipur",
+};
+
+// ─── Dropdown Data ─────────────────────────────────────────────────────────────
 const dropdownData = {
   internships: {
     categories: [
@@ -65,8 +90,18 @@ const dropdownData = {
   }
 };
 
+// ─── Dropdown Menu ─────────────────────────────────────────────────────────────
 const DropdownMenu = ({ data }) => {
   const [activeTab, setActiveTab] = useState(0);
+  const navigate = useNavigate();
+
+  const handleLinkClick = (link) => {
+    const route = LINK_ROUTES[link];
+    if (route) {
+      navigate(route);
+    }
+    // If no route mapped yet, do nothing (future pages)
+  };
 
   return (
     <div className="absolute top-[100%] left-0 pt-2 hidden group-hover:block z-[100]">
@@ -92,13 +127,18 @@ const DropdownMenu = ({ data }) => {
           ))}
         </div>
 
-        {/* Right Side Content (Dynamic based on Hover) */}
+        {/* Right Side Content */}
         <div className="flex-1 p-6 bg-white overflow-y-auto max-h-[500px]">
           <div className="grid grid-cols-1 gap-y-4">
             {data.categories[activeTab]?.links.map((link, idx) => (
               <div 
-                key={idx} 
-                className="text-[14px] text-gray-700 hover:text-[#008bdc] cursor-pointer transition-colors font-normal"
+                key={idx}
+                onClick={() => handleLinkClick(link)}
+                className={`text-[14px] text-gray-700 transition-colors font-normal
+                  ${LINK_ROUTES[link] 
+                    ? 'hover:text-[#008bdc] cursor-pointer' 
+                    : 'text-gray-400 cursor-default'
+                  }`}
               >
                 {link}
               </div>
@@ -110,6 +150,7 @@ const DropdownMenu = ({ data }) => {
   );
 };
 
+// ─── Hero Section ──────────────────────────────────────────────────────────────
 const HeroSection = () => {
   const [jobIndex, setJobIndex] = useState(0);
   const [internIndex, setInternIndex] = useState(0);
@@ -243,8 +284,8 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-          <div className="hidden lg:block lg:w-1/2 ">
-             <img src="https://internshala.com/static/images/homepage/banner/r991.webp" alt="Banner" className="max-w-md ml-auto object-contain" />
+          <div className="hidden lg:block lg:w-1/2">
+            <img src="https://internshala.com/static/images/homepage/banner/r991.webp" alt="Banner" className="max-w-md ml-auto object-contain" />
           </div>
         </div>
       </section>
@@ -256,7 +297,15 @@ const HeroSection = () => {
         {/* Categories bar */}
         <div className="flex space-x-3 mb-16 overflow-x-auto no-scrollbar justify-start md:justify-center">
           {categories.map((cat, i) => (
-            <button key={i} className={`px-6 py-2 rounded-full border text-[14px] font-bold whitespace-nowrap transition-all ${i === 0 ? 'bg-[#008bdc] text-white border-[#008bdc] shadow-md shadow-sky-100' : 'bg-white text-gray-500 border-gray-200 hover:border-[#008bdc] hover:text-[#008bdc]'}`}>
+            <button
+              key={i}
+              onClick={() => cat === "Work from home" && navigate('/jobs/wfh')}
+              className={`px-6 py-2 rounded-full border text-[14px] font-bold whitespace-nowrap transition-all ${
+                i === 0 
+                  ? 'bg-[#008bdc] text-white border-[#008bdc] shadow-md shadow-sky-100' 
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-[#008bdc] hover:text-[#008bdc]'
+              }`}
+            >
               {cat}
             </button>
           ))}
@@ -266,7 +315,9 @@ const HeroSection = () => {
         <div className="mb-24">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl font-bold text-gray-800">Internships</h3>
-            <button className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline">View all internships <ChevronRight className="w-4 h-4"/></button>
+            <button className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline">
+              View all internships <ChevronRight className="w-4 h-4"/>
+            </button>
           </div>
           <SliderTemplate 
             items={internships} index={internIndex} visibleSlides={visibleSlides} 
@@ -278,8 +329,15 @@ const HeroSection = () => {
         {/* JOBS SECTION */}
         <div className="mb-24">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-bold text-gray-800">Jobs <span className="ml-2 bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-black">Fresher</span></h3>
-            <button className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline">View all jobs <ChevronRight className="w-4 h-4"/></button>
+            <h3 className="text-2xl font-bold text-gray-800">
+              Jobs <span className="ml-2 bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-black">Fresher</span>
+            </h3>
+            <button
+              onClick={() => navigate('/jobs/wfh')}
+              className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline"
+            >
+              View all jobs <ChevronRight className="w-4 h-4"/>
+            </button>
           </div>
           <SliderTemplate 
             items={jobs} index={jobIndex} visibleSlides={visibleSlides} 
@@ -351,6 +409,7 @@ const HeroSection = () => {
   );
 };
 
+// ─── Slider Template ───────────────────────────────────────────────────────────
 const SliderTemplate = ({ items, index, visibleSlides, next, prev, type }) => (
   <div className="relative group/slider">
     <div className="overflow-hidden">
@@ -379,8 +438,12 @@ const SliderTemplate = ({ items, index, visibleSlides, next, prev, type }) => (
         ))}
       </div>
     </div>
-    <button onClick={prev} className={`absolute -left-4 top-1/2 -translate-y-1/2 bg-white shadow-lg border border-gray-100 rounded-full p-2.5 z-10 ${index === 0 ? 'invisible' : ''}`}><ChevronLeft className="w-5 h-5"/></button>
-    <button onClick={next} className={`absolute -right-4 top-1/2 -translate-y-1/2 bg-white shadow-lg border border-gray-100 rounded-full p-2.5 z-10 ${index >= items.length - visibleSlides ? 'invisible' : ''}`}><ChevronRight className="w-5 h-5"/></button>
+    <button onClick={prev} className={`absolute -left-4 top-1/2 -translate-y-1/2 bg-white shadow-lg border border-gray-100 rounded-full p-2.5 z-10 ${index === 0 ? 'invisible' : ''}`}>
+      <ChevronLeft className="w-5 h-5"/>
+    </button>
+    <button onClick={next} className={`absolute -right-4 top-1/2 -translate-y-1/2 bg-white shadow-lg border border-gray-100 rounded-full p-2.5 z-10 ${index >= items.length - visibleSlides ? 'invisible' : ''}`}>
+      <ChevronRight className="w-5 h-5"/>
+    </button>
   </div>
 );
 
