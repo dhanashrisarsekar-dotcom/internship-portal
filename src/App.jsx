@@ -5,6 +5,7 @@ import LoginPage from './login';
 import SignupPage from './Register';
 import WFHJobsPage from './WFHJobsPage';
 import JobDetailPage from './JobDetailPage';
+import ApplyForm from './ApplyForm';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
               <Route path="/register" element={<SignupPage />} />
               <Route path="/jobs/wfh" element={<WFHJobsPage />} />
               <Route path="/jobs/detail/:id" element={<JobDetailPage />} />
+              <Route path="/jobs/apply/:id" element={<ApplyForm />} />
+          
             </Routes>
           </div>
         </Router>

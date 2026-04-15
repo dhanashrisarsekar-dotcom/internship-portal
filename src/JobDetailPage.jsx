@@ -441,7 +441,10 @@ const JobDetailPage = () => {
                   <Share2 className="w-4 h-4" />
                   {copied ? "Copied!" : "Share"}
                 </button>
-                <button className="bg-[#008bdc] text-white px-8 py-2.5 rounded-lg font-bold text-[14px] hover:bg-[#0079c0] transition shadow-sm shadow-blue-200">
+                <button
+                  onClick={() => navigate(`/jobs/apply/${job.id}`)}
+                  className="bg-[#008bdc] text-white px-8 py-2.5 rounded-lg font-bold text-[14px] hover:bg-[#0079c0] transition shadow-sm shadow-blue-200"
+                >
                   Apply now
                 </button>
               </div>
@@ -529,7 +532,10 @@ const JobDetailPage = () => {
 
           {/* ── Bottom Apply Button ── */}
           <div className="px-6 md:px-8 pb-8 flex justify-center">
-            <button className="bg-[#008bdc] text-white px-16 py-3 rounded-lg font-bold text-[15px] hover:bg-[#0079c0] transition shadow-sm shadow-blue-200">
+            <button
+              onClick={() => navigate(`/jobs/apply/${job.id}`)}
+              className="bg-[#008bdc] text-white px-16 py-3 rounded-lg font-bold text-[15px] hover:bg-[#0079c0] transition shadow-sm shadow-blue-200"
+            >
               Apply now
             </button>
           </div>
