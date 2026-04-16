@@ -6,6 +6,7 @@ import SignupPage from './Register';
 import WFHJobsPage from './WFHJobsPage';
 import JobDetailPage from './JobDetailPage';
 import ApplyForm from './ApplyForm';
+import ResumePreview from './ResumePreview';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {

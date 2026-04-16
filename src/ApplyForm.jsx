@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-
+import ResumePreview from './ResumePreview';
 import {
 
   ChevronDown, ChevronRight, X, Search, Check, Info,
@@ -56,8 +56,12 @@ const COURSES = ["B.Tech", "BE", "B.Com", "MBA", "B.A", "B.Sc", "M.Tech", "M.Com
 
 const TYPES = ["College student", "Fresher", "Working professional", "School student", "Woman returning to work"];
 
-const YEARS = Array.from({ length: 15 }, (_, i) => (new Date().getFullYear() - 2 + i).toString());
+const CURRENT_YEAR = new Date().getFullYear();
 
+const YEARS = Array.from(
+  { length: 20 },
+  (_, i) => (CURRENT_YEAR - 19 + i).toString()
+);
 const STREAMS = [
 
   "Computer Science & Engineering", "Electronics & Communication", "Mechanical Engineering",
@@ -132,15 +136,13 @@ const Chip = ({ label, selected, onToggle, removable }) => (
 
     onClick={onToggle}
 
-    className={`px-4 py-1.5 rounded-full text-[13px] font-semibold border transition-all flex items-center gap-1.5 ${
+    className={`px-4 py-1.5 rounded-full text-[13px] font-semibold border transition-all flex items-center gap-1.5 ${selected
 
-      selected
+      ? 'bg-[#008bdc] text-white border-[#008bdc]'
 
-        ? 'bg-[#008bdc] text-white border-[#008bdc]'
+      : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc] hover:text-[#008bdc]'
 
-        : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc] hover:text-[#008bdc]'
-
-    }`}
+      }`}
 
   >
 
@@ -322,10 +324,12 @@ const Step1 = ({ form, setForm }) => {
 
         <Label>Email</Label>
 
-        <TextInput value={form.email} onChange={() => {}} placeholder="your@email.com" disabled icon={Mail} />
-
-        <p className="text-[12px] text-gray-400 mt-1">Email cannot be changed here.</p>
-
+        <TextInput
+          value={form.email}
+          onChange={v => setForm(p => ({ ...p, email: v }))}
+          placeholder="your@email.com"
+          icon={Mail}
+        />
       </div>
 
 
@@ -400,15 +404,13 @@ const Step1 = ({ form, setForm }) => {
 
               onClick={() => setForm(p => ({ ...p, gender: label }))}
 
-              className={`px-5 py-2 rounded-full text-[14px] font-semibold border-2 transition-all flex items-center gap-2 ${
+              className={`px-5 py-2 rounded-full text-[14px] font-semibold border-2 transition-all flex items-center gap-2 ${form.gender === label
 
-                form.gender === label
+                ? 'bg-[#008bdc] text-white border-[#008bdc]'
 
-                  ? 'bg-[#008bdc] text-white border-[#008bdc]'
+                : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc]'
 
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc]'
-
-              }`}
+                }`}
 
             >
 
@@ -534,15 +536,13 @@ const Step2 = ({ form, setForm }) => {
 
               onClick={() => setForm(p => ({ ...p, type }))}
 
-              className={`px-5 py-2 rounded-full text-[13px] font-semibold border-2 transition-all ${
+              className={`px-5 py-2 rounded-full text-[13px] font-semibold border-2 transition-all ${form.type === type
 
-                form.type === type
+                ? 'bg-[#008bdc] text-white border-[#008bdc]'
 
-                  ? 'bg-[#008bdc] text-white border-[#008bdc]'
+                : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc]'
 
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc]'
-
-              }`}
+                }`}
 
             >
 
@@ -574,15 +574,13 @@ const Step2 = ({ form, setForm }) => {
 
               onClick={() => setForm(p => ({ ...p, course }))}
 
-              className={`px-4 py-2 rounded-full text-[13px] font-semibold border-2 transition-all ${
+              className={`px-4 py-2 rounded-full text-[13px] font-semibold border-2 transition-all ${form.course === course
 
-                form.course === course
+                ? 'bg-[#008bdc] text-white border-[#008bdc]'
 
-                  ? 'bg-[#008bdc] text-white border-[#008bdc]'
+                : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc]'
 
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#008bdc]'
-
-              }`}
+                }`}
 
             >
 
@@ -714,7 +712,28 @@ const Step2 = ({ form, setForm }) => {
 
           <Label>Start year</Label>
 
-          <SelectInput value={form.startYear} onChange={v => setForm(p => ({ ...p, startYear: v }))} options={YEARS} placeholder="Select year" />
+          <SelectInput
+            value={form.startYear}
+            onChange={v =>
+              setForm(p => {
+                const newStart = parseInt(v);
+                const currentEnd = parseInt(p.endYear);
+
+                return {
+                  ...p,
+                  startYear: v,
+                  endYear:
+                    p.endYear && currentEnd < newStart + 3
+                      ? ''
+                      : p.endYear
+                };
+              })
+            }
+            options={
+              YEARS.filter(y => parseInt(y) <= new Date().getFullYear())
+            }
+            placeholder="Select year"
+          />
 
         </div>
 
@@ -722,7 +741,16 @@ const Step2 = ({ form, setForm }) => {
 
           <Label>End year</Label>
 
-          <SelectInput value={form.endYear} onChange={v => setForm(p => ({ ...p, endYear: v }))} options={YEARS} placeholder="Select year" />
+          <SelectInput
+            value={form.endYear}
+            onChange={v => setForm(p => ({ ...p, endYear: v }))}
+            options={
+              form.startYear
+                ? YEARS.filter(y => parseInt(y) >= parseInt(form.startYear) + 3)
+                : YEARS
+            }
+            placeholder="Select year"
+          />
 
         </div>
 
@@ -734,11 +762,82 @@ const Step2 = ({ form, setForm }) => {
 
 };
 
+// ─── Step 3: Add skills ──────────────────────────────────────────────────
+const Step3Form = ({ form, setForm }) => {
+  const [skillInput, setSkillInput] = useState('');
 
+  const addSkill = () => {
+    if (skillInput.trim() && !form.skills.includes(skillInput)) {
+      setForm(p => ({
+        ...p,
+        skills: [...p.skills, skillInput.trim()]
+      }));
+      setSkillInput('');
+    }
+  };
 
-// ─── Step 3: Success ───────────────────────────────────────────────────────────
+  const removeSkill = (skill) => {
+    setForm(p => ({
+      ...p,
+      skills: p.skills.filter(s => s !== skill)
+    }));
+  };
 
-const Step3 = ({ job, navigate }) => (
+  return (
+    <div className="space-y-7">
+
+      {/* Skills */}
+      <div>
+        <Label>Skills</Label>
+
+        <div className="flex gap-2 mb-3">
+          <input
+            type="text"
+            value={skillInput}
+            onChange={e => setSkillInput(e.target.value)}
+            placeholder="e.g. Video Editing"
+            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-[14px]"
+          />
+          <button
+            onClick={addSkill}
+            className="px-4 py-2 bg-[#008bdc] text-white rounded-lg text-sm font-semibold"
+          >
+            Add
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {form.skills.map(skill => (
+            <Chip
+              key={skill}
+              label={skill}
+              selected
+              removable
+              onToggle={() => removeSkill(skill)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* About */}
+      <div>
+        <Label>About you</Label>
+        <textarea
+          value={form.about}
+          onChange={e => setForm(p => ({ ...p, about: e.target.value }))}
+          placeholder="Tell something about yourself..."
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[14px] outline-none focus:border-[#008bdc]"
+          rows={4}
+        />
+      </div>
+
+    </div>
+  );
+};
+
+// ─── Step 4: Success ───────────────────────────────────────────────────────────
+
+const Step4 = ({ job, navigate }) => (
 
   <div className="text-center py-12">
 
@@ -830,7 +929,7 @@ const ApplyForm = () => {
 
 
 
-  const TOTAL_STEPS = 2;
+  const TOTAL_STEPS = 4;
 
   const [step, setStep] = useState(1);
 
@@ -840,7 +939,7 @@ const ApplyForm = () => {
 
   const [form, setForm] = useState({
 
-    firstName: '', lastName: '', email: 'user@example.com',
+    firstName: '', lastName: '', email: localStorage.getItem('userEmail') || '',
 
     phone: '', city: '', gender: '',
 
@@ -849,6 +948,10 @@ const ApplyForm = () => {
     type: 'College student', course: 'B.Tech',
 
     college: '', stream: '', startYear: '', endYear: '',
+
+    skills: [],
+
+    about: '',
 
   });
 
@@ -875,13 +978,18 @@ const ApplyForm = () => {
     }
 
     if (step === 2) {
-
       if (!form.college.trim()) e.college = 'College name is required';
-
       if (!form.startYear) e.startYear = 'Start year is required';
-
       if (!form.endYear) e.endYear = 'End year is required';
 
+      if (form.startYear && form.endYear) {
+        const start = parseInt(form.startYear);
+        const end = parseInt(form.endYear);
+
+        if (end < start + 3) {
+          e.endYear = 'End year must be at least 3 years after start year';
+        }
+      }
     }
 
     setErrors(e);
@@ -893,14 +1001,14 @@ const ApplyForm = () => {
 
 
   const handleNext = () => {
+  if (!validate()) return;
 
-    if (!validate()) return;
-
-    if (step < TOTAL_STEPS) setStep(s => s + 1);
-
-    else setStep(3); // success
-
-  };
+  if (step < TOTAL_STEPS) {
+    setStep(step + 1);
+  } else {
+    setStep(5); // go to success
+  }
+};
 
 
 
@@ -1013,10 +1121,10 @@ const ApplyForm = () => {
               )}
 
 
-
               {step === 1 && <Step1 form={form} setForm={setForm} errors={errors} />}
-
               {step === 2 && <Step2 form={form} setForm={setForm} errors={errors} />}
+              {step === 3 && <Step3Form form={form} setForm={setForm} />}
+              {step === 4 && <ResumePreview form={form} />}
 
 
 
@@ -1048,7 +1156,7 @@ const ApplyForm = () => {
 
                 >
 
-                  {step === TOTAL_STEPS ? 'Submit' : 'Next'}
+                  {step === TOTAL_STEPS ? 'Next' : 'Continue'}
 
                 </button>
 
@@ -1062,7 +1170,7 @@ const ApplyForm = () => {
 
 
 
-        {step === 3 && <Step3 job={job} navigate={navigate} />}
+        {step === 5 && <Step4 job={job} navigate={navigate} />}
 
       </div>
 
