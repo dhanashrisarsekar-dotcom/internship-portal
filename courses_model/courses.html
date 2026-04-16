@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Courses</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">CareerBridge</div>
+</div>
+
+<!-- MENU -->
+<div class="course-menu">
+  <a href="courses.html">All</a>
+  <a href="courses.html?category=web">Web</a>
+  <a href="courses.html?category=ai">AI/ML</a>
+  <a href="courses.html?category=python">Python</a>
+  <a href="courses.html?category=datascience">Data Science</a>
+  <a href="courses.html?category=mobile">Mobile</a>
+  <a href="courses.html?category=security">Security</a>
+</div>
+
+<h1 class="center">Explore Courses 🚀</h1>
+
+<div id="courseContainer" class="grid"></div>
+
+<div id="applyBox" class="modal">
+  <div class="card-form">
+
+    <h2 id="applyTitle">Enroll Course</h2>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="phone" placeholder="Mobile Number">
+
+    <input type="text" id="college" placeholder="College / Company">
+    
+    <select id="education">
+      <option value="">Select Education</option>
+      <option>High School</option>
+      <option>Diploma</option>
+      <option>Graduate</option>
+      <option>Post Graduate</option>
+    </select>
+
+    <input type="text" id="city" placeholder="City">
+
+    <input type="text" id="skills" placeholder="Skills (comma separated)">
+
+    <textarea id="reason" placeholder="Why do you want to join?" rows="3"></textarea>
+
+    <button class="btn" onclick="validateForm()">Proceed to Payment</button>
+
+  </div>
+</div>
+<!-- PAYMENT -->
+<div id="paymentBox" class="modal">
+  <div class="card-form">
+    <h2>Scan & Pay ₹4000</h2>
+
+    <img class="qr"
+    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=sakshi.salunkhe555-1@okaxis&pn=CareerBridge&am=4000&cu=INR">
+
+    <button class="btn" onclick="confirmPayment()">I Have Paid</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="successBox" class="modal">
+  <div class="card-form">
+    <h2>🎉 Success</h2>
+    <p>Enrollment Confirmed</p>
+
+    <button class="btn" onclick="closeAll()">OK</button>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/courses.js"></script>
+
+</body>
+</html>
