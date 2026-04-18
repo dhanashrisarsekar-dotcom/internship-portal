@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SkillsInput from './components/SkillsInput';
+import { WorkExperienceModal, ProjectModal, TrainingModal, AchievementModal, PortfolioModal } from './components/ResumeModals';
 
-const ResumePreview = ({ form }) => {
-    const [showEduModal, setShowEduModal] = React.useState(false);
-    const [showEduForm, setShowEduForm] = React.useState(false);
+const ResumePreview = ({ form, setForm }) => {
+    const [showEduModal, setShowEduModal] = useState(false);
+    const [showEduForm, setShowEduForm] = useState(false);
+    const [activeModal, setActiveModal] = useState(null);
 
     const [eduForm, setEduForm] = React.useState({
         college: '',
@@ -42,17 +45,46 @@ const ResumePreview = ({ form }) => {
                     <input
                         type="file"
                         className="hidden"
-                        accept=".pdf,.doc,.docx"
+                        accept=".pdf"
                         onChange={(e) => {
                             const file = e.target.files[0];
                             if (file) {
-                                console.log(file.name);
+                                if (file.type !== 'application/pdf') {
+                                    alert('Only PDF files allowed');
+                                    e.target.value = '';
+                                    return;
+                                }
+                                setForm && setForm(prev => ({ ...prev, resumeFile: file }));
                             }
                         }}
                     />
                 </label>
-
             </div>
+
+            {form.resumeFile && (
+                <div className="p-6 border-b bg-gray-50/50">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xs font-bold text-gray-400 tracking-wide">
+                            UPLOADED RESUME
+                        </h3>
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm font-semibold text-gray-700">{form.resumeFile.name}</span>
+                            <button
+                                onClick={() => setForm && setForm(prev => ({ ...prev, resumeFile: null }))}
+                                className="text-red-500 hover:text-red-700 text-sm font-semibold"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                    <iframe
+                        src={URL.createObjectURL(form.resumeFile)}
+                        className="w-full h-[500px] border rounded-lg"
+                        title="Resume Preview"
+                    />
+                </div>
+            )}
+
             {/* Top Info */}
             <div className="p-6 border-b">
                 <div className="flex justify-between items-start">
@@ -117,47 +149,132 @@ const ResumePreview = ({ form }) => {
                 <h3 className="text-xs font-bold text-gray-400 mb-4 tracking-wide">
                     SKILLS
                 </h3>
-
-                {form.skills.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                        {form.skills.map(skill => (
-                            <span
-                                key={skill}
-                                className="px-3 py-1 text-sm bg-gray-100 rounded-full"
-                            >
-                                {skill}
-                            </span>
-                        ))}
-                    </div>
-                ) : (
-                    <button className="text-[#008bdc] text-sm font-semibold">
-                        + Add skill
-                    </button>
-                )}
+                <SkillsInput skills={form.skills} setForm={setForm} />
             </div>
 
-            {/* Extra Sections (static for now like Internshala UI) */}
-            <div className="p-6 space-y-4 text-sm">
+            {/* Extra Sections */}
+            <div className="p-6 space-y-6 text-sm">
+                
+                {/* Work Experience */}
+                <div className="border-b pb-4">
+                    <h3 className="text-gray-600 uppercase text-xs font-semibold mb-3">Work experience</h3>
+                    {form.workExperience && form.workExperience.length > 0 ? (
+                        <div className="space-y-4 mb-3">
+                            {form.workExperience.map((exp, i) => (
+                                <div key={i}>
+                                    <p className="font-semibold text-gray-900">{exp.role}</p>
+                                    <p className="text-sm text-gray-600">{exp.company}</p>
+                                    <p className="text-sm text-gray-400">{exp.startDate} - {exp.endDate}</p>
+                                    {exp.description && <p className="text-sm text-gray-700 mt-1">{exp.description}</p>}
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveModal('work')} className="text-[#008bdc] font-semibold text-sm">+ Add work experience</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setActiveModal('work')} className="text-[#008bdc] font-semibold text-sm">+ Add work experience</button>
+                    )}
+                </div>
 
-                {[
-                    "Work experience",
-                    "Extra curricular activities",
-                    "Trainings / courses",
-                    "Academic / personal projects",
-                    "Portfolio / work samples",
-                    "Accomplishments / additional details"
-                ].map(section => (
-                    <div key={section} className="flex justify-between border-b pb-3">
-                        <span className="text-gray-600 uppercase text-xs font-semibold">
-                            {section}
-                        </span>
-                        <button className="text-[#008bdc] font-semibold">
-                            + Add
-                        </button>
-                    </div>
-                ))}
+                {/* Extra Curricular */}
+                <div className="border-b pb-4">
+                    <h3 className="text-gray-600 uppercase text-xs font-semibold mb-3">Extra curricular activities</h3>
+                    {form.extraCurricular && form.extraCurricular.length > 0 ? (
+                        <div className="space-y-4 mb-3">
+                            {form.extraCurricular.map((item, i) => (
+                                <div key={i}>
+                                    <p className="font-semibold text-gray-900">{item.title}</p>
+                                    {item.description && <p className="text-sm text-gray-700 mt-1">{item.description}</p>}
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveModal('extra')} className="text-[#008bdc] font-semibold text-sm">+ Add extra curricular</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setActiveModal('extra')} className="text-[#008bdc] font-semibold text-sm">+ Add extra curricular</button>
+                    )}
+                </div>
 
+                {/* Trainings */}
+                <div className="border-b pb-4">
+                    <h3 className="text-gray-600 uppercase text-xs font-semibold mb-3">Trainings / courses</h3>
+                    {form.trainings && form.trainings.length > 0 ? (
+                        <div className="space-y-4 mb-3">
+                            {form.trainings.map((item, i) => (
+                                <div key={i}>
+                                    <p className="font-semibold text-gray-900">{item.title}</p>
+                                    <p className="text-sm text-gray-600">{item.organization}</p>
+                                    <p className="text-sm text-gray-400">{item.duration}</p>
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveModal('training')} className="text-[#008bdc] font-semibold text-sm">+ Add training</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setActiveModal('training')} className="text-[#008bdc] font-semibold text-sm">+ Add training</button>
+                    )}
+                </div>
+
+                {/* Projects */}
+                <div className="border-b pb-4">
+                    <h3 className="text-gray-600 uppercase text-xs font-semibold mb-3">Academic / personal projects</h3>
+                    {form.projects && form.projects.length > 0 ? (
+                        <div className="space-y-4 mb-3">
+                            {form.projects.map((item, i) => (
+                                <div key={i}>
+                                    <p className="font-semibold text-gray-900">{item.title}</p>
+                                    {item.link && <a href={item.link} target="_blank" rel="noreferrer" className="text-sm text-[#008bdc] hover:underline">{item.link}</a>}
+                                    {item.description && <p className="text-sm text-gray-700 mt-1">{item.description}</p>}
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveModal('project')} className="text-[#008bdc] font-semibold text-sm">+ Add project</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setActiveModal('project')} className="text-[#008bdc] font-semibold text-sm">+ Add project</button>
+                    )}
+                </div>
+
+                {/* Portfolio */}
+                <div className="border-b pb-4">
+                    <h3 className="text-gray-600 uppercase text-xs font-semibold mb-3">Portfolio / work samples</h3>
+                    {form.portfolio && form.portfolio.length > 0 ? (
+                        <div className="space-y-4 mb-3">
+                            {form.portfolio.map((item, i) => (
+                                <div key={i}>
+                                    <p className="font-semibold text-gray-900">{item.title}</p>
+                                    <a href={item.link} target="_blank" rel="noreferrer" className="text-sm text-[#008bdc] hover:underline">{item.link}</a>
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveModal('portfolio')} className="text-[#008bdc] font-semibold text-sm">+ Add portfolio</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setActiveModal('portfolio')} className="text-[#008bdc] font-semibold text-sm">+ Add portfolio</button>
+                    )}
+                </div>
+
+                {/* Accomplishments */}
+                <div className="pb-4">
+                    <h3 className="text-gray-600 uppercase text-xs font-semibold mb-3">Accomplishments / additional details</h3>
+                    {form.accomplishments && form.accomplishments.length > 0 ? (
+                        <div className="space-y-4 mb-3">
+                            {form.accomplishments.map((item, i) => (
+                                <div key={i}>
+                                    <p className="font-semibold text-gray-900">{item.title}</p>
+                                    {item.description && <p className="text-sm text-gray-700 mt-1">{item.description}</p>}
+                                </div>
+                            ))}
+                            <button onClick={() => setActiveModal('accomplishment')} className="text-[#008bdc] font-semibold text-sm">+ Add accomplishment</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setActiveModal('accomplishment')} className="text-[#008bdc] font-semibold text-sm">+ Add accomplishment</button>
+                    )}
+                </div>
             </div>
+
+            {/* Modals rendering */}
+            {activeModal === 'work' && <WorkExperienceModal onClose={() => setActiveModal(null)} onSave={(data) => { setForm(prev => ({...prev, workExperience: [...(prev.workExperience||[]), data]})); setActiveModal(null); }} />}
+            {activeModal === 'extra' && <AchievementModal title="Extra curricular activities" onClose={() => setActiveModal(null)} onSave={(data) => { setForm(prev => ({...prev, extraCurricular: [...(prev.extraCurricular||[]), data]})); setActiveModal(null); }} />}
+            {activeModal === 'training' && <TrainingModal onClose={() => setActiveModal(null)} onSave={(data) => { setForm(prev => ({...prev, trainings: [...(prev.trainings||[]), data]})); setActiveModal(null); }} />}
+            {activeModal === 'project' && <ProjectModal onClose={() => setActiveModal(null)} onSave={(data) => { setForm(prev => ({...prev, projects: [...(prev.projects||[]), data]})); setActiveModal(null); }} />}
+            {activeModal === 'portfolio' && <PortfolioModal onClose={() => setActiveModal(null)} onSave={(data) => { setForm(prev => ({...prev, portfolio: [...(prev.portfolio||[]), data]})); setActiveModal(null); }} />}
+            {activeModal === 'accomplishment' && <AchievementModal title="Accomplishments / additional details" onClose={() => setActiveModal(null)} onSave={(data) => { setForm(prev => ({...prev, accomplishments: [...(prev.accomplishments||[]), data]})); setActiveModal(null); }} />}
             {showEduModal && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 

@@ -41,13 +41,13 @@ const SignupPage = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center pt-12 px-4">
-      <Link to="/"><div className="text-[#008bdc] font-black text-2xl italic mb-12">INTERNSHALA</div></Link>
+      <Link to="/"><div className="text-[#008bdc] font-black text-2xl italic mb-12">CAREERBRIDGE</div></Link>
       
       <div className="text-center mb-10">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
           Sign-up and <span className="text-[#00A5EC] border-b-4 border-[#00A5EC] rounded-full px-2">apply for free</span>
         </h1>
-        <p className="text-xl font-medium text-gray-600">3,00,000+ companies hiring on Internshala</p>
+        <p className="text-xl font-medium text-gray-600">3,00,000+ companies hiring on CareerBridge</p>
       </div>
 
       <div className="w-full max-w-md border border-gray-200 rounded-2xl shadow-sm overflow-hidden p-8">

@@ -1,133 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search, ChevronLeft, ChevronRight, ChevronDown,
   Wallet, Briefcase, Bell, Home, Clock, Star, Filter, X
 } from 'lucide-react';
 
 // ─── Sample Data ───────────────────────────────────────────────────────────────
-const jobsData = [
-  {
-    id: 1, title: "Content Writer", company: "Appnigma AI",
-    companyLocation: "Sacramento, United States",
-    salary: "₹ 5,00,000 - 8,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "We're looking for a LinkedIn Content Writer who will own our brand voice and thought leadership in the AI space.",
-    skills: ["Content Writing", "Content Marketing", "LinkedIn Marketing"],
-    postedAt: "Just now", badge: "early", tags: ["International"], activelyHiring: true,
-  },
-  {
-    id: 2, title: "Agentic AI Associate", company: "Awarno",
-    companyLocation: null,
-    salary: "₹ 3,00,000 - 4,50,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key Responsibilities: 1. Build and manage automation workflows using n8n 2. Design and deploy intelligent agents.",
-    skills: ["Artificial Intelligence"],
-    postedAt: "Just now", badge: "early", tags: [], activelyHiring: true,
-  },
-  {
-    id: 3, title: "Dental Patient Coordinator (USA Remote)", company: "Todays Dental Services",
-    companyLocation: null,
-    salary: "₹ 2,40,000 - 3,00,000", experience: "No experience required", type: "Work from home",
-    description: "Key Responsibilities: 1. Handle patient inquiries with excellent communication and listening skills 2. Coordinate appointments.",
-    skills: ["Attention to Detail", "Time Management", "Problem Solving", "Client Relationship Management (CRM)", "Effective Communication", "Patient Counseling"],
-    postedAt: "Just now", badge: "early", tags: ["Fresher Job"], activelyHiring: true,
-  },
-  {
-    id: 4, title: "Sales Executive", company: "Golden Sparrow LLC",
-    companyLocation: "San Francisco, United States",
-    salary: "₹ 2,40,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: Conduct cold calling to potential leads and generate new business opportunities for the company.",
-    skills: ["Cold Calling", "Effective Communication"],
-    postedAt: "Today", badge: null, tags: ["International"], activelyHiring: true,
-  },
-  {
-    id: 5, title: "Telecaller", company: "Sunny_6400 Limited",
-    companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "Are you a dynamic and energetic individual with excellent communication skills and a knack for sales? Join us!",
-    skills: ["MS-Excel"],
-    postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-  },
-  {
-    id: 6, title: "Senior Telecaller", company: "Sunny_6400 Limited",
-    companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "As a Senior Telecaller at Sunny_6400 Limited, you will be an essential part of our dynamic sales team.",
-    skills: ["MS-Excel"],
-    postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-  },
-  {
-    id: 7, title: "Video Editor", company: "Ankit Chahal",
-    companyLocation: null,
-    salary: "₹ 2,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "We are looking for a talented Video Editor to join our team at Ankit Chahal company. As a Video Editor, you'll create compelling content.",
-    skills: ["Video Editing", "Adobe Premiere Pro", "Final Cut Pro", "Video Making"],
-    postedAt: "1 day ago", badge: null, tags: [], activelyHiring: false,
-  },
-  {
-    id: 8, title: "Biomedical Research Assistant", company: "Sandesh Kandel",
-    companyLocation: null,
-    salary: "₹ 2,50,000 - 10,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: 1. Assist in assembling and integrating biomedical sensors 2. Guide the practical implementation of research.",
-    skills: ["Arduino", "Circuit Design", "Circuit Modeling & Simulation", "ESP32"],
-    postedAt: "2 days ago", badge: null, tags: ["Part time"], activelyHiring: false,
-  },
-  {
-    id: 9, title: "Senior Software Developer", company: "Sanvya Health",
-    companyLocation: null,
-    salary: "₹ 2,05,000 - 3,85,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: 1. Collaborate with the development team to design and implement front-end and back-end solutions.",
-    skills: ["PHP", "JavaScript", "Nginx", "AngularJS", "PostgreSQL", "Docker", "GitHub"],
-    postedAt: "Today", badge: null, tags: [], activelyHiring: false,
-  },
-  {
-    id: 10, title: "Human Resources (HR) Supervisor", company: "Sunny_6400 Limited",
-    companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "Are you a dynamic and experienced Human Resources professional looking for a new challenge? Join our growing team.",
-    skills: ["MS-Excel"],
-    postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-  },
-  {
-    id: 11, title: "Human Resources (HR) Manager", company: "Sunny_6400 Limited",
-    companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "Are you a skilled Human Resources (HR) Manager with a knack for MS-Excel? Sunny_6400 Limited is looking for you.",
-    skills: ["MS-Excel"],
-    postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-  },
-  {
-    id: 12, title: "Junior Company Secretary (CS)", company: "Registration Arena",
-    companyLocation: null,
-    salary: "₹ 2,40,000 - 3,00,000", experience: "No experience required", type: "Work from home",
-    description: "Key Responsibilities: 1. Handle company and LLP incorporations. 2. Manage secretarial audits, due diligence, and compliance.",
-    skills: ["MS-Office", "Company Law", "English Proficiency (Spoken)", "English Proficiency (Written)"],
-    postedAt: "5 days ago", badge: null, tags: ["Fresher Job"], activelyHiring: true,
-  },
-  {
-    id: 13, title: "CAD Designer", company: "Velozity Global Solutions",
-    companyLocation: null,
-    salary: "₹ 2,20,000 - 2,40,000", experience: "1 year(s)", type: "Work from home",
-    description: "As a CAD Designer at Velozity Global Solutions, you will have the opportunity to utilize your expertise in AutoCAD.",
-    skills: ["AutoCAD", "Autodesk 3ds Max"],
-    postedAt: "3 days ago", badge: null, tags: [], activelyHiring: true,
-  },
-  {
-    id: 14, title: "Video Creator", company: "Napraj Moving Packing Private Limited",
-    companyLocation: null,
-    salary: "₹ 12,00,000", experience: "No experience required", type: "Work from home",
-    description: "As a Video Creator, you will have the exciting opportunity to showcase your creative talents and make an impact.",
-    skills: ["Video Making"],
-    postedAt: "Just now", badge: "early", tags: ["Fresher Job"], activelyHiring: false,
-  },
-  {
-    id: 15, title: "Revit Drafter", company: "ZAR Architectural Prospective Drawings Services Co LLC",
-    companyLocation: null,
-    salary: "₹ 5,00,000 - 6,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: 1. Creating BIM (building information model) with Autodesk Revit Software 2. Architectural drafting.",
-    skills: ["AutoCAD", "Autodesk Revit", "BIM (Building Information Modeling)"],
-    postedAt: "3 weeks ago", badge: null, tags: [], activelyHiring: false,
-  },
-];
+import { jobsData } from './data/jobsData';
 
 // ─── Company Logo Placeholder ──────────────────────────────────────────────────
 const CompanyLogo = () => (
@@ -362,23 +241,55 @@ const FilterSidebar = ({ filters, setFilters, onClose }) => {
   );
 };
 
-// ─── Main WFH Jobs Page ────────────────────────────────────────────────────────
+// ─── Main Jobs Page ────────────────────────────────────────────────────────
 const WFHJobsPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [filters, setFilters] = useState({
-    profile: "", location: "", wfh: true, partTime: false, salary: 0, experience: "", search: "",
+    profile: searchParams.get('category') || "",
+    location: searchParams.get('location') || "",
+    wfh: searchParams.get('type') === 'wfh',
+    partTime: searchParams.get('partTime') === 'true',
+    salary: 0,
+    experience: searchParams.get('experience') === 'Fresher' ? "0" : "",
+    search: "",
   });
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  useEffect(() => {
+    setFilters({
+      profile: searchParams.get('category') || "",
+      location: searchParams.get('location') || "",
+      wfh: searchParams.get('type') === 'wfh',
+      partTime: searchParams.get('partTime') === 'true',
+      salary: 0,
+      experience: searchParams.get('experience') === 'Fresher' ? "0" : "",
+      search: "",
+    });
+  }, [searchParams]);
 
   // Apply filters
   const filtered = jobsData.filter(job => {
     const q = (filters.search || filters.profile).toLowerCase();
     if (q && !job.title.toLowerCase().includes(q) &&
         !job.company.toLowerCase().includes(q) &&
+        !job.category?.toLowerCase().includes(q) &&
         !job.skills.some(s => s.toLowerCase().includes(q))) return false;
-    if (filters.partTime && !job.tags.includes("Part time")) return false;
+    
+    if (filters.partTime && (!job.tags || !job.tags.includes("Part time"))) return false;
+    if (filters.wfh && job.type !== "wfh" && (!job.tags || !job.tags.includes("Work from home")) && job.location !== "Work from home") return false;
+    if (filters.location && !job.location?.toLowerCase().includes(filters.location.toLowerCase()) && !job.companyLocation?.toLowerCase().includes(filters.location.toLowerCase())) return false;
+    if (filters.experience === "0" && job.experience !== "Fresher") return false;
+    
     return true;
   });
+
+  let pageTitle = "Latest Jobs";
+  let pageDesc = "Latest Jobs in India";
+  if (filters.wfh) { pageTitle = "Work From Home Jobs"; pageDesc = "Latest Online Work From Home (WFH)/ Remote Jobs in India"; }
+  else if (filters.experience === "0") { pageTitle = "Fresher Jobs"; pageDesc = "Latest Jobs for Freshers"; }
+  else if (filters.location) { pageTitle = `Jobs in ${filters.location}`; pageDesc = `Latest Jobs in ${filters.location}`; }
+  else if (filters.profile) { pageTitle = `${filters.profile} Jobs`; pageDesc = `Latest ${filters.profile} Jobs`; }
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -389,7 +300,7 @@ const WFHJobsPage = () => {
           className="text-[#008bdc] font-black text-2xl italic tracking-tighter cursor-pointer"
           onClick={() => navigate('/')}
         >
-          INTERNSHALA
+          CAREERBRIDGE
         </div>
         <div className="hidden md:flex items-center gap-6 text-[14px] font-semibold text-gray-500">
           <button className="hover:text-[#008bdc] flex items-center gap-1">
@@ -415,14 +326,14 @@ const WFHJobsPage = () => {
           <ChevronRight className="w-3.5 h-3.5" />
           <button className="hover:text-[#008bdc]">Jobs</button>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-gray-800 font-medium">WFH Jobs</span>
+          <span className="text-gray-800 font-medium">{pageTitle}</span>
         </div>
       </div>
 
       {/* ── Page Title ── */}
       <div className="text-center py-5 bg-white border-b">
-        <h1 className="text-2xl font-bold text-gray-900">{filtered.length.toLocaleString()} Work From Home Jobs</h1>
-        <p className="text-gray-500 text-[13px] mt-1">Latest Online Work From Home (WFH)/ Remote Jobs in India</p>
+        <h1 className="text-2xl font-bold text-gray-900">{filtered.length.toLocaleString()} {pageTitle}</h1>
+        <p className="text-gray-500 text-[13px] mt-1">{pageDesc}</p>
       </div>
 
       {/* ── Main Layout ── */}

@@ -125,7 +125,7 @@ const LoginPage = () => {
         </form>
 
         <p className="mt-8 text-center text-sm">
-          New to Internshala? Register (
+          New to CareerBridge? Register (
           <Link to="/register" className="text-[#00A5EC] font-bold">Student</Link> / 
           <Link to="/register" className="text-[#00A5EC] font-bold">Company</Link>)
         </p>

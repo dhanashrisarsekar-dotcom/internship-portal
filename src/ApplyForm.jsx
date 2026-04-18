@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import ResumePreview from './ResumePreview';
+import SkillsInput from './components/SkillsInput';
+import HiddenResumeTemplate from './components/HiddenResumeTemplate';
+import html2pdf from 'html2pdf.js';
+import emailjs from '@emailjs/browser';
 import {
 
   ChevronDown, ChevronRight, X, Search, Check, Info,
@@ -14,39 +18,7 @@ import {
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 
-const jobsData = [
-
-  { id: 1, title: "Content Writer", company: "Appnigma AI", location: "Bangalore" },
-
-  { id: 2, title: "Agentic AI Associate", company: "Awarno", location: "Work from home" },
-
-  { id: 3, title: "Dental Patient Coordinator (USA Remote)", company: "Todays Dental Services", location: "Work from home" },
-
-  { id: 4, title: "Sales Executive", company: "Golden Sparrow LLC", location: "San Francisco" },
-
-  { id: 5, title: "Telecaller", company: "Sunny_6400 Limited", location: "Work from home" },
-
-  { id: 6, title: "Senior Telecaller", company: "Sunny_6400 Limited", location: "Work from home" },
-
-  { id: 7, title: "Video Editor", company: "Ankit Chahal", location: "Work from home" },
-
-  { id: 8, title: "Biomedical Research Assistant", company: "Sandesh Kandel", location: "Work from home" },
-
-  { id: 9, title: "Senior Software Developer", company: "Sanvya Health", location: "Work from home" },
-
-  { id: 10, title: "Human Resources (HR) Supervisor", company: "Sunny_6400 Limited", location: "Work from home" },
-
-  { id: 11, title: "Human Resources (HR) Manager", company: "Sunny_6400 Limited", location: "Work from home" },
-
-  { id: 12, title: "Junior Company Secretary (CS)", company: "Registration Arena", location: "Work from home" },
-
-  { id: 13, title: "CAD Designer", company: "Velozity Global Solutions", location: "Work from home" },
-
-  { id: 14, title: "Video Creator", company: "Napraj Moving Packing Private Limited", location: "Work from home" },
-
-  { id: 15, title: "Revit Drafter", company: "ZAR Architectural", location: "Work from home" },
-
-];
+import { jobsData } from './data/jobsData';
 
 
 
@@ -90,9 +62,7 @@ const Navbar = ({ navigate }) => (
 
     >
 
-      <span className="text-[#008bdc] font-black text-2xl italic tracking-tighter">INTERN</span>
-
-      <span className="text-gray-800 font-black text-2xl italic tracking-tighter">SHALA</span>
+      <span className="text-[#008bdc] font-black text-2xl italic tracking-tighter">CAREERBRIDGE</span>
 
     </div>
 
@@ -764,59 +734,12 @@ const Step2 = ({ form, setForm }) => {
 
 // ─── Step 3: Add skills ──────────────────────────────────────────────────
 const Step3Form = ({ form, setForm }) => {
-  const [skillInput, setSkillInput] = useState('');
-
-  const addSkill = () => {
-    if (skillInput.trim() && !form.skills.includes(skillInput)) {
-      setForm(p => ({
-        ...p,
-        skills: [...p.skills, skillInput.trim()]
-      }));
-      setSkillInput('');
-    }
-  };
-
-  const removeSkill = (skill) => {
-    setForm(p => ({
-      ...p,
-      skills: p.skills.filter(s => s !== skill)
-    }));
-  };
-
   return (
     <div className="space-y-7">
-
       {/* Skills */}
-      <div>
+      <div className="mb-8">
         <Label>Skills</Label>
-
-        <div className="flex gap-2 mb-3">
-          <input
-            type="text"
-            value={skillInput}
-            onChange={e => setSkillInput(e.target.value)}
-            placeholder="e.g. Video Editing"
-            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-[14px]"
-          />
-          <button
-            onClick={addSkill}
-            className="px-4 py-2 bg-[#008bdc] text-white rounded-lg text-sm font-semibold"
-          >
-            Add
-          </button>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {form.skills.map(skill => (
-            <Chip
-              key={skill}
-              label={skill}
-              selected
-              removable
-              onToggle={() => removeSkill(skill)}
-            />
-          ))}
-        </div>
+        <SkillsInput skills={form.skills} setForm={setForm} />
       </div>
 
       {/* About */}
@@ -861,7 +784,7 @@ const Step4 = ({ job, navigate }) => (
 
       <button
 
-        onClick={() => navigate('/jobs/wfh')}
+        onClick={() => navigate('/jobs')}
 
         className="px-8 py-3 border-2 border-[#008bdc] text-[#008bdc] rounded-lg font-bold text-[14px] hover:bg-blue-50 transition"
 
@@ -934,6 +857,7 @@ const ApplyForm = () => {
   const [step, setStep] = useState(1);
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
 
@@ -950,9 +874,14 @@ const ApplyForm = () => {
     college: '', stream: '', startYear: '', endYear: '',
 
     skills: [],
-
     about: '',
-
+    workExperience: [],
+    extraCurricular: [],
+    trainings: [],
+    projects: [],
+    portfolio: [],
+    accomplishments: [],
+    resumeFile: null,
   });
 
 
@@ -1000,15 +929,71 @@ const ApplyForm = () => {
 
 
 
-  const handleNext = () => {
-  if (!validate()) return;
+  async function uploadFile(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "resumeforcareerbridge");
+    formData.append("resource_type", "raw");
 
-  if (step < TOTAL_STEPS) {
-    setStep(step + 1);
-  } else {
-    setStep(5); // go to success
+    const res = await fetch("https://api.cloudinary.com/v1_1/dbeblgobt/raw/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+    return data.secure_url;
   }
-};
+
+  const handleNext = async () => {
+    if (!validate()) return;
+
+    if (step < TOTAL_STEPS) {
+      setStep(step + 1);
+    } else {
+      setIsSubmitting(true);
+      try {
+        const element = document.getElementById("pdf-content");
+        const pdfBlob = await html2pdf().from(element).outputPdf("blob");
+        const pdfFile = new File([pdfBlob], "generated_resume.pdf");
+
+        const generatedURL = await uploadFile(pdfFile);
+
+        let uploadedURL = null;
+        if (form.resumeFile) {
+          uploadedURL = await uploadFile(form.resumeFile);
+        }
+
+        console.log("Generated URL:", generatedURL);
+        console.log("Uploaded URL:", uploadedURL);
+
+        const response = await emailjs.send(
+          "service_44dlkrp",
+          "template_v0w8yae",
+          {
+            name: form.firstName + " " + form.lastName,
+            email: form.email,
+            phone: form.phone,
+            job: job.title,
+            message: form.about,
+
+            generated_resume_link: generatedURL,
+            uploaded_resume_link: uploadedURL || "Not provided"
+          },
+          "bfhrbOdIKAgIkJnUL"
+        );
+
+        console.log("SUCCESS:", response);
+        setStep(5); // go to success
+      } catch (error) {
+        console.error("EMAIL ERROR FULL:", error);
+        console.error("STATUS:", error?.status);
+        console.error("TEXT:", error?.text);
+        alert("Email failed: " + (error?.text || "Unknown error"));
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
 
 
 
@@ -1056,8 +1041,7 @@ const ApplyForm = () => {
 
               Applying to <span className="font-semibold text-gray-900">{job.title}</span> Job
 
-              {job.location !== 'Work from home' ? ` in ${job.location}` : ' (Work from home)'}
-
+              {job.companyLocation ? ` in ${job.companyLocation}` : ' (Work from home)'}
               {' '}at <span className="font-semibold text-gray-900">{job.company}</span>
 
             </span>
@@ -1124,7 +1108,7 @@ const ApplyForm = () => {
               {step === 1 && <Step1 form={form} setForm={setForm} errors={errors} />}
               {step === 2 && <Step2 form={form} setForm={setForm} errors={errors} />}
               {step === 3 && <Step3Form form={form} setForm={setForm} />}
-              {step === 4 && <ResumePreview form={form} />}
+              {step === 4 && <ResumePreview form={form} setForm={setForm} />}
 
 
 
@@ -1151,12 +1135,13 @@ const ApplyForm = () => {
                 <button
 
                   onClick={handleNext}
+                  disabled={isSubmitting}
 
-                  className="px-10 py-3 bg-[#008bdc] text-white rounded-lg font-bold text-[14px] hover:bg-[#0079c0] transition shadow-sm shadow-blue-100"
+                  className={`px-10 py-3 bg-[#008bdc] text-white rounded-lg font-bold text-[14px] transition shadow-sm shadow-blue-100 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#0079c0]'}`}
 
                 >
 
-                  {step === TOTAL_STEPS ? 'Next' : 'Continue'}
+                  {isSubmitting ? 'Sending...' : (step === TOTAL_STEPS ? 'Submit Application' : 'Continue')}
 
                 </button>
 
@@ -1172,6 +1157,7 @@ const ApplyForm = () => {
 
         {step === 5 && <Step4 job={job} navigate={navigate} />}
 
+        <HiddenResumeTemplate form={form} />
       </div>
 
     </div>

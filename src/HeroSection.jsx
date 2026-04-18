@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jobsData } from './data/jobsData';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import { 
@@ -11,17 +12,50 @@ import {
 // ─── Route map: dropdown link text → React Router path ────────────────────────
 const LINK_ROUTES = {
   // Jobs > Top Locations
-  "Work from home": "/jobs/wfh",
-  "Jobs in Bangalore": "/jobs/bangalore",
-  "Jobs in Delhi": "/jobs/delhi",
-  "Jobs in Hyderabad": "/jobs/hyderabad",
-  "Jobs in Mumbai": "/jobs/mumbai",
-  "Jobs in Pune": "/jobs/pune",
-  "Jobs in Chennai": "/jobs/chennai",
-  "Jobs in Kolkata": "/jobs/kolkata",
-  "Jobs in Gurgaon": "/jobs/gurgaon",
-  "Jobs in Noida": "/jobs/noida",
-  "Jobs in Jaipur": "/jobs/jaipur",
+  "Work from home": "/jobs?type=wfh",
+  "Jobs in Bangalore": "/jobs?location=Bangalore",
+  "Jobs in Delhi": "/jobs?location=Delhi",
+  "Jobs in Hyderabad": "/jobs?location=Hyderabad",
+  "Jobs in Mumbai": "/jobs?location=Mumbai",
+  "Jobs in Pune": "/jobs?location=Pune",
+  "Jobs in Chennai": "/jobs?location=Chennai",
+  "Jobs in Kolkata": "/jobs?location=Kolkata",
+  "Jobs in Gurgaon": "/jobs?location=Gurgaon",
+  "Jobs in Noida": "/jobs?location=Noida",
+  "Jobs in Jaipur": "/jobs?location=Jaipur",
+  
+  // Jobs > Top Categories
+  "Data Entry Jobs": "/jobs?category=Data Entry",
+  "Content Writing Jobs": "/jobs?category=Content Writing",
+  "Digital Marketing Jobs": "/jobs?category=Digital Marketing",
+  "Data Science Jobs": "/jobs?category=Data Science",
+  "Cyber Security Jobs": "/jobs?category=Cyber Security",
+  "Pharma Jobs": "/jobs?category=Pharma",
+  "Teaching Jobs": "/jobs?category=Teaching",
+  "HR Jobs": "/jobs?category=HR",
+  "MBA Jobs": "/jobs?category=MBA",
+  "Graphic Design Jobs": "/jobs?category=Graphic Design",
+  "Part Time Jobs": "/jobs?partTime=true",
+
+  // Jobs > Fresher Jobs
+  "Fresher Jobs in Bangalore": "/jobs?experience=Fresher&location=Bangalore",
+  "Fresher Jobs in Delhi": "/jobs?experience=Fresher&location=Delhi",
+  "Fresher Jobs in Hyderabad": "/jobs?experience=Fresher&location=Hyderabad",
+  "Fresher Jobs in Chennai": "/jobs?experience=Fresher&location=Chennai",
+  "Fresher Jobs in Pune": "/jobs?experience=Fresher&location=Pune",
+  "MBA Fresher Jobs": "/jobs?experience=Fresher&category=MBA",
+  "HR Fresher Jobs": "/jobs?experience=Fresher&category=HR",
+  "Civil Fresher Jobs": "/jobs?experience=Fresher&category=Civil",
+  "Digital Marketing Fresher Jobs": "/jobs?experience=Fresher&category=Digital Marketing",
+
+  // Explore More Jobs
+  "Jobs by Category": "/jobs",
+  "Jobs by Location": "/jobs",
+  "Jobs by Designation": "/jobs",
+  "Jobs by Skill": "/jobs",
+  "Jobs by Company": "/jobs",
+  "WFH Job Types": "/jobs?type=wfh",
+
   // Internships > Top Locations
   "Internship in Bangalore": "/internships/bangalore",
   "Internship in Delhi": "/internships/delhi",
@@ -68,11 +102,6 @@ const dropdownData = {
       {
         label: "Explore More Jobs",
         links: ["Jobs by Category", "Jobs by Location", "Jobs by Designation", "Jobs by Skill", "Jobs by Company", "WFH Job Types"]
-      },
-      {
-        label: "Online Placement Courses",
-        isNew: true,
-        links: ["Full Stack Development Course", "Data Science Course", "Human Resource Management Course", "Digital Marketing Course", "UI/UX Design Course", "Product Management Course", "Financial Modelling Course", "Supply Chain Logistics Course"]
       }
     ]
   },
@@ -157,6 +186,7 @@ const HeroSection = () => {
   const [courseIndex, setCourseIndex] = useState(0);
   const [visibleSlides, setVisibleSlides] = useState(3);
   const [courseVisibleSlides, setCourseVisibleSlides] = useState(4);
+  const [activeCategory, setActiveCategory] = useState("Big brands");
   const navigate = useNavigate();
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -195,21 +225,26 @@ const HeroSection = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    setInternIndex(0);
+    setJobIndex(0);
+  }, [activeCategory]);
+
   const categories = ["Big brands", "Work from home", "Part-time", "MBA", "Engineering", "Media", "Design", "Data Science"];
   
-  const jobs = [
-    { id: 1, title: "Human Resources (HR) Executive", company: "Avenue E-Commerce Limited", location: "Vadodara", salary: "₹ 3,00,000 - 3,50,000 /year" },
-    { id: 2, title: "Corporate Sales Manager", company: "Ion Exchange India Limited", location: "Work From Home", salary: "₹ 5,50,000 - 8,00,000 /year" },
-    { id: 3, title: "Business Development Executive", company: "Netscribes (India) Private Limited", location: "Mumbai (Hybrid)", salary: "₹ 3,00,000 /year" },
-    { id: 4, title: "Electronics Engineer", company: "VIZON", location: "Dehradun", salary: "₹ 12,80,000 - 25,00,000 /year" },
-  ];
+  const filteredJobs = jobsData.filter(job => {
+    if (activeCategory === "Big brands") return true;
+    if (activeCategory === "Work from home") return job.type === "Work from home" || (job.tags && job.tags.includes("Work from home"));
+    return job.tags && job.tags.includes(activeCategory);
+  });
 
-  const internships = [
-    { id: 1, title: "Telecalling", company: "Novo Learning Private Limited", location: "Bangalore", stipend: "₹ 25,000 - 40,000 /month", duration: "1 Month" },
-    { id: 2, title: "Content & E-Commerce Management", company: "Kanha Creation", location: "Delhi (Hybrid)", stipend: "₹ 4,100 - 7,000 /month", duration: "3 Months" },
-    { id: 3, title: "Client Acquisition", company: "Angel One (AP)", location: "Work From Home", stipend: "₹ 1,000 - 20,000 /month", duration: "1 Month" },
-    { id: 4, title: "Video Editing/Making", company: "DCC", location: "Work From Home", stipend: "₹ 3,000 - 4,000 /month", duration: "6 Months" },
-  ];
+  const allInternships = jobsData.filter(job => job.duration === "Part-time" || (job.tags && job.tags.includes("Part time")));
+  const catInternships = filteredJobs.filter(job => job.duration === "Part-time" || (job.tags && job.tags.includes("Part time")));
+  const internships = catInternships.length > 0 ? catInternships : allInternships.slice(0, 4);
+
+  const allJobs = jobsData.filter(job => job.duration !== "Part-time" && !(job.tags && job.tags.includes("Part time")));
+  const catJobs = filteredJobs.filter(job => job.duration !== "Part-time" && !(job.tags && job.tags.includes("Part time")));
+  const jobs = catJobs.length > 0 ? catJobs : allJobs.slice(0, 4);
 
   const certificationCourses = [
     { id: 1, title: "Artificial Intelligence and Machine Learning", duration: "8 weeks", learners: "91,313", rating: "4.1", trending: true, icon: "🧠" },
@@ -232,7 +267,7 @@ const HeroSection = () => {
       {/* 1. NAVBAR */}
       <nav className="flex items-center justify-between px-6 lg:px-10 py-3 bg-white border-b sticky top-0 z-50">
         <div className="flex items-center space-x-8">
-          <div className="text-[#008bdc] font-black text-2xl italic tracking-tighter cursor-pointer">INTERNSHALA</div>
+          <div className="text-[#008bdc] font-black text-2xl italic tracking-tighter cursor-pointer">CAREERBRIDGE</div>
           <div className="hidden lg:flex items-center space-x-1 font-semibold text-gray-600 text-[14px]">
             <div className="relative group py-2">
               <span className="flex items-center cursor-pointer hover:text-[#008bdc] px-4">
@@ -299,9 +334,9 @@ const HeroSection = () => {
           {categories.map((cat, i) => (
             <button
               key={i}
-              onClick={() => cat === "Work from home" && navigate('/jobs/wfh')}
+              onClick={() => setActiveCategory(cat)}
               className={`px-6 py-2 rounded-full border text-[14px] font-bold whitespace-nowrap transition-all ${
-                i === 0 
+                activeCategory === cat 
                   ? 'bg-[#008bdc] text-white border-[#008bdc] shadow-md shadow-sky-100' 
                   : 'bg-white text-gray-500 border-gray-200 hover:border-[#008bdc] hover:text-[#008bdc]'
               }`}
@@ -333,7 +368,7 @@ const HeroSection = () => {
               Jobs <span className="ml-2 bg-orange-100 text-orange-600 text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-black">Fresher</span>
             </h3>
             <button
-              onClick={() => navigate('/jobs/wfh')}
+              onClick={() => navigate('/jobs')}
               className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline"
             >
               View all jobs <ChevronRight className="w-4 h-4"/>
@@ -426,12 +461,12 @@ const SliderTemplate = ({ items, index, visibleSlides, next, prev, type }) => (
               <h4 className="font-bold text-[16px] text-gray-800 mb-1">{item.title}</h4>
               <p className="text-gray-400 text-[13px] font-medium mb-6">{item.company}</p>
               <div className="space-y-3 text-[13px] text-gray-600 mt-auto pt-4 border-t border-gray-50">
-                <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-gray-300"/> {item.location}</div>
+                <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-gray-300"/> {item.location || item.companyLocation || 'Work from home'}</div>
                 <div className="flex items-center gap-2"><Wallet className="w-3.5 h-3.5 text-gray-300"/> {item.salary || item.stipend}</div>
               </div>
               <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-50">
                 <span className="bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 rounded font-bold uppercase">{type}</span>
-                <button className="text-[#008bdc] font-bold text-[13px] flex items-center">View details <ChevronRight className="w-4 h-4 ml-0.5"/></button>
+                <Link to={type === 'Job' ? `/jobs/detail/${item.id}` : '#'} className="text-[#008bdc] font-bold text-[13px] flex items-center">View details <ChevronRight className="w-4 h-4 ml-0.5"/></Link>
               </div>
             </div>
           </div>

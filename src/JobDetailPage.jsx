@@ -6,267 +6,7 @@ import {
 } from 'lucide-react';
 
 // ─── Same jobsData as WFHJobsPage (in real app, move this to a shared file) ───
-const jobsData = [
-  {
-    id: 1, title: "Content Writer", company: "Appnigma AI",
-    companyLocation: "Sacramento, United States",
-    salary: "₹ 5,00,000 - 8,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "We're looking for a LinkedIn Content Writer who will own our brand voice and thought leadership in the AI space.",
-    skills: ["Content Writing", "Content Marketing", "LinkedIn Marketing"],
-    postedAt: "Just now", badge: "early", tags: ["International"], activelyHiring: true,
-    // Detail-specific fields
-    startDate: "Immediately",
-    duration: "Full-time",
-    applicants: 42,
-    openings: 2,
-    applyBy: "30 Apr' 26",
-    aboutWork: `As a Content Writer at Appnigma AI, you will own our brand voice and thought leadership in the AI space.
-
-Selected candidate's day-to-day responsibilities include:
-
-1. Writing high-quality LinkedIn posts, articles, and long-form content on AI topics
-2. Developing and maintaining a consistent brand voice across all content channels
-3. Researching industry trends and translating complex AI concepts into accessible content
-4. Collaborating with marketing and product teams to align messaging
-5. Analyzing content performance and optimizing based on engagement metrics
-6. Creating email newsletters, blog posts, and case studies
-7. Managing content calendar and ensuring timely delivery`,
-    whoCanApply: `Only those candidates can apply who:
-1. are available for the work from home job
-2. can start immediately
-3. have relevant skills and interests
-4. have 1+ year of content writing experience
-* Candidates with strong LinkedIn presence preferred.`,
-    perks: ["Certificate", "Letter of recommendation", "Flexible work hours"],
-    aboutCompany: "Appnigma AI is a cutting-edge artificial intelligence company based in Sacramento, United States. We build intelligent tools and platforms to help businesses leverage the power of AI for growth and efficiency.",
-    activity: { since: "March 2023", opportunities: 45, hired: 120 },
-    companyType: null,
-  },
-  {
-    id: 2, title: "Agentic AI Associate", company: "Awarno",
-    companyLocation: null,
-    salary: "₹ 3,00,000 - 4,50,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key Responsibilities: 1. Build and manage automation workflows using n8n 2. Design and deploy intelligent agents.",
-    skills: ["Artificial Intelligence"],
-    postedAt: "Just now", badge: "early", tags: [], activelyHiring: true,
-    startDate: "Immediately", duration: "Full-time", applicants: 28, openings: 3,
-    applyBy: "15 May' 26",
-    aboutWork: `As an Agentic AI Associate at Awarno, you will be at the forefront of intelligent automation.
-
-Selected candidate's day-to-day responsibilities include:
-
-1. Build and manage automation workflows using n8n
-2. Design and deploy intelligent AI agents for various business use cases
-3. Integrate LLMs with external APIs and data sources
-4. Monitor and improve agent performance over time
-5. Document workflows and maintain technical documentation`,
-    whoCanApply: `Only those candidates can apply who:
-1. are available for the work from home job
-2. can start immediately
-3. have experience with AI tools and automation platforms
-4. have relevant skills and interests`,
-    perks: ["Certificate", "Flexible work hours", "5 days a week"],
-    aboutCompany: "Awarno is an innovative AI solutions company helping businesses automate complex workflows using cutting-edge agentic AI technology.",
-    activity: { since: "January 2024", opportunities: 12, hired: 30 },
-    companyType: null,
-  },
-  {
-    id: 3, title: "Dental Patient Coordinator (USA Remote)", company: "Todays Dental Services",
-    companyLocation: null,
-    salary: "₹ 2,40,000 - 3,00,000", experience: "No experience required", type: "Work from home",
-    description: "Key Responsibilities: 1. Handle patient inquiries with excellent communication and listening skills 2. Coordinate appointments.",
-    skills: ["Attention to Detail", "Time Management", "Problem Solving", "Client Relationship Management (CRM)", "Effective Communication", "Patient Counseling"],
-    postedAt: "Just now", badge: "early", tags: ["Fresher Job"], activelyHiring: true,
-    startDate: "Immediately", duration: "Full-time", applicants: 67, openings: 5,
-    applyBy: "20 May' 26",
-    aboutWork: `As a Dental Patient Coordinator at Todays Dental Services, you will be the first point of contact for patients.
-
-Selected candidate's day-to-day responsibilities include:
-
-1. Handle patient inquiries with excellent communication and listening skills
-2. Coordinate and schedule patient appointments efficiently
-3. Maintain accurate patient records and follow-up schedules
-4. Communicate treatment plans and financial options to patients
-5. Work closely with dental teams to ensure seamless patient experience`,
-    whoCanApply: `Only those candidates can apply who:
-1. are available for the work from home job/internship
-2. can start immediately
-3. are available for the required duration
-4. have relevant skills and interests
-* Freshers are welcome to apply.`,
-    perks: ["Certificate", "Letter of recommendation"],
-    aboutCompany: "Todays Dental Services provides remote patient coordination services to dental practices across the United States.",
-    activity: { since: "June 2022", opportunities: 89, hired: 310 },
-    companyType: null,
-  },
-  {
-    id: 4, title: "Sales Executive", company: "Golden Sparrow LLC",
-    companyLocation: "San Francisco, United States",
-    salary: "₹ 2,40,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: Conduct cold calling to potential leads and generate new business opportunities for the company.",
-    skills: ["Cold Calling", "Effective Communication"],
-    postedAt: "Today", badge: null, tags: ["International"], activelyHiring: true,
-    startDate: "Immediately", duration: "Full-time", applicants: 35, openings: 4,
-    applyBy: "25 Apr' 26",
-    aboutWork: `As a Sales Executive at Golden Sparrow LLC, you will drive new business growth through proactive outreach.
-
-Selected candidate's day-to-day responsibilities include:
-
-1. Conduct cold calling to potential leads and generate new business opportunities
-2. Follow up with prospects and maintain a consistent sales pipeline
-3. Present product/service offerings clearly and persuasively
-4. Meet and exceed monthly sales targets
-5. Maintain CRM records and report on sales activity`,
-    whoCanApply: `Only those candidates can apply who:
-1. are available for the work from home job
-2. can start immediately
-3. have 1+ year of sales experience
-4. have relevant skills and interests`,
-    perks: ["5 days a week", "Informal dress code"],
-    aboutCompany: "Golden Sparrow LLC is a US-based business development firm focused on B2B sales across multiple verticals.",
-    activity: { since: "August 2021", opportunities: 200, hired: 750 },
-    companyType: null,
-  },
-  {
-    id: 5, title: "Telecaller", company: "Sunny_6400 Limited",
-    companyLocation: null, salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "Are you a dynamic and energetic individual with excellent communication skills and a knack for sales? Join us!",
-    skills: ["MS-Excel"], postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-    startDate: "Immediately", duration: "Part-time", applicants: 91, openings: 10, applyBy: "30 Apr' 26",
-    aboutWork: `As a Telecaller at Sunny_6400 Limited, you will connect with customers and drive sales through effective communication.\n\n1. Make outbound calls to potential customers\n2. Explain products/services clearly\n3. Maintain call records in MS-Excel\n4. Meet daily call targets\n5. Handle customer queries professionally`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. are available for part-time work\n4. have relevant skills and interests\n* Freshers are welcome.`,
-    perks: ["Flexible work hours", "Certificate"],
-    aboutCompany: "Sunny_6400 Limited is a dynamic sales organization with a focus on telecalling and customer outreach.",
-    activity: { since: "January 2020", opportunities: 500, hired: 2100 },
-    companyType: null,
-  },
-  {
-    id: 6, title: "Senior Telecaller", company: "Sunny_6400 Limited", companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "As a Senior Telecaller at Sunny_6400 Limited, you will be an essential part of our dynamic sales team.",
-    skills: ["MS-Excel"], postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-    startDate: "Immediately", duration: "Part-time", applicants: 54, openings: 5, applyBy: "30 Apr' 26",
-    aboutWork: `As a Senior Telecaller, you will lead a team and drive sales performance.\n\n1. Handle escalated customer calls\n2. Train junior telecallers\n3. Maintain and update Excel records\n4. Achieve team targets\n5. Report daily performance to management`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. are available for part-time work\n4. have relevant skills\n* Freshers welcome.`,
-    perks: ["Flexible work hours", "Certificate", "Letter of recommendation"],
-    aboutCompany: "Sunny_6400 Limited is a dynamic sales organization with a focus on telecalling and customer outreach.",
-    activity: { since: "January 2020", opportunities: 500, hired: 2100 }, companyType: null,
-  },
-  {
-    id: 7, title: "Video Editor", company: "Ankit Chahal", companyLocation: null,
-    salary: "₹ 2,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "We are looking for a talented Video Editor to join our team at Ankit Chahal company.",
-    skills: ["Video Editing", "Adobe Premiere Pro", "Final Cut Pro", "Video Making"],
-    postedAt: "1 day ago", badge: null, tags: [], activelyHiring: false,
-    startDate: "Immediately", duration: "Full-time", applicants: 19, openings: 1, applyBy: "10 May' 26",
-    aboutWork: `As a Video Editor at Ankit Chahal, you will create compelling video content.\n\n1. Edit and assemble footage into finished content\n2. Add music, effects, and transitions\n3. Color grade and audio mix videos\n4. Deliver assets in required formats\n5. Collaborate with content team`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. have 1+ year of video editing experience\n4. are proficient in Premiere Pro or Final Cut Pro`,
-    perks: ["Flexible work hours", "5 days a week"],
-    aboutCompany: "Ankit Chahal is a content creator and digital media company specializing in YouTube and social media video content.",
-    activity: { since: "May 2023", opportunities: 8, hired: 15 }, companyType: null,
-  },
-  {
-    id: 8, title: "Biomedical Research Assistant", company: "Sandesh Kandel", companyLocation: null,
-    salary: "₹ 2,50,000 - 10,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: 1. Assist in assembling and integrating biomedical sensors 2. Guide the practical implementation of research.",
-    skills: ["Arduino", "Circuit Design", "Circuit Modeling & Simulation", "ESP32"],
-    postedAt: "2 days ago", badge: null, tags: ["Part time"], activelyHiring: false,
-    startDate: "Immediately", duration: "Part-time", applicants: 11, openings: 2, applyBy: "5 May' 26",
-    aboutWork: `As a Biomedical Research Assistant, you will support cutting-edge sensor research.\n\n1. Assist in assembling and integrating biomedical sensors\n2. Guide practical implementation of research prototypes\n3. Document experiments and results\n4. Work with Arduino and ESP32 platforms\n5. Collaborate remotely with research team`,
-    whoCanApply: `1. are available for the work from home job\n2. are available for part-time work\n3. have experience with Arduino/ESP32\n4. have relevant skills and interests`,
-    perks: ["Certificate", "Letter of recommendation"],
-    aboutCompany: "Sandesh Kandel Research Lab focuses on developing low-cost biomedical devices for healthcare applications.",
-    activity: { since: "September 2023", opportunities: 5, hired: 8 }, companyType: null,
-  },
-  {
-    id: 9, title: "Senior Software Developer", company: "Sanvya Health", companyLocation: null,
-    salary: "₹ 2,05,000 - 3,85,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: 1. Collaborate with the development team to design and implement front-end and back-end solutions.",
-    skills: ["PHP", "JavaScript", "Nginx", "AngularJS", "PostgreSQL", "Docker", "GitHub"],
-    postedAt: "Today", badge: null, tags: [], activelyHiring: false,
-    startDate: "Immediately", duration: "Full-time", applicants: 23, openings: 2, applyBy: "20 May' 26",
-    aboutWork: `As a Senior Software Developer at Sanvya Health, you will build and maintain healthcare software.\n\n1. Collaborate with the team to design and implement full-stack solutions\n2. Write clean, maintainable PHP and JavaScript code\n3. Manage deployments using Docker and Nginx\n4. Optimize PostgreSQL database queries\n5. Review code and mentor junior developers`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. have 1+ year of relevant experience\n4. are proficient in the required tech stack`,
-    perks: ["5 days a week", "Health insurance"],
-    aboutCompany: "Sanvya Health is a digital health startup building technology solutions for modern healthcare challenges.",
-    activity: { since: "February 2022", opportunities: 30, hired: 65 }, companyType: null,
-  },
-  {
-    id: 10, title: "Human Resources (HR) Supervisor", company: "Sunny_6400 Limited", companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "Are you a dynamic and experienced Human Resources professional looking for a new challenge? Join our growing team.",
-    skills: ["MS-Excel"], postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-    startDate: "Immediately", duration: "Part-time", applicants: 77, openings: 8, applyBy: "30 Apr' 26",
-    aboutWork: `As an HR Supervisor, you will oversee HR operations at Sunny_6400 Limited.\n\n1. Manage recruitment and onboarding processes\n2. Maintain employee records in MS-Excel\n3. Handle employee queries and grievances\n4. Coordinate performance reviews\n5. Ensure HR policy compliance`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. are available for part-time work\n4. have relevant skills\n* Freshers welcome.`,
-    perks: ["Flexible work hours", "Certificate"],
-    aboutCompany: "Sunny_6400 Limited is a growing organization with a strong focus on building talented teams.",
-    activity: { since: "January 2020", opportunities: 500, hired: 2100 }, companyType: null,
-  },
-  {
-    id: 11, title: "Human Resources (HR) Manager", company: "Sunny_6400 Limited", companyLocation: null,
-    salary: "₹ 4,00,000 - 6,00,000", experience: "No experience required", type: "Work from home",
-    description: "Are you a skilled Human Resources (HR) Manager with a knack for MS-Excel? Sunny_6400 Limited is looking for you.",
-    skills: ["MS-Excel"], postedAt: "Today", badge: null, tags: ["Fresher Job", "Part time"], activelyHiring: true,
-    startDate: "Immediately", duration: "Part-time", applicants: 63, openings: 5, applyBy: "30 Apr' 26",
-    aboutWork: `As an HR Manager, you will lead the HR function at Sunny_6400 Limited.\n\n1. Develop and implement HR strategies\n2. Oversee recruitment, onboarding, and offboarding\n3. Manage performance management systems\n4. Handle employee relations and conflict resolution\n5. Report HR metrics to senior management`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. are available for part-time work\n4. have relevant skills\n* Freshers welcome.`,
-    perks: ["Flexible work hours", "Certificate", "Letter of recommendation"],
-    aboutCompany: "Sunny_6400 Limited is a growing organization focused on building excellent teams.",
-    activity: { since: "January 2020", opportunities: 500, hired: 2100 }, companyType: null,
-  },
-  {
-    id: 12, title: "Junior Company Secretary (CS)", company: "Registration Arena", companyLocation: null,
-    salary: "₹ 2,40,000 - 3,00,000", experience: "No experience required", type: "Work from home",
-    description: "Key Responsibilities: 1. Handle company and LLP incorporations. 2. Manage secretarial audits, due diligence, and compliance.",
-    skills: ["MS-Office", "Company Law", "English Proficiency (Spoken)", "English Proficiency (Written)"],
-    postedAt: "5 days ago", badge: null, tags: ["Fresher Job"], activelyHiring: true,
-    startDate: "Immediately", duration: "Full-time", applicants: 48, openings: 3, applyBy: "15 May' 26",
-    aboutWork: `As a Junior Company Secretary at Registration Arena, you will handle legal and compliance work.\n\n1. Handle company and LLP incorporations\n2. Manage secretarial audits and due diligence\n3. Prepare and file statutory documents\n4. Maintain statutory registers and records\n5. Assist senior CS professionals`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. have knowledge of Company Law\n4. have relevant skills and interests\n* Freshers welcome.`,
-    perks: ["Certificate", "Letter of recommendation", "Flexible work hours"],
-    aboutCompany: "Registration Arena is a legal and compliance services firm helping businesses navigate company registrations and secretarial compliance.",
-    activity: { since: "April 2019", opportunities: 150, hired: 420 }, companyType: null,
-  },
-  {
-    id: 13, title: "CAD Designer", company: "Velozity Global Solutions", companyLocation: null,
-    salary: "₹ 2,20,000 - 2,40,000", experience: "1 year(s)", type: "Work from home",
-    description: "As a CAD Designer at Velozity Global Solutions, you will have the opportunity to utilize your expertise in AutoCAD.",
-    skills: ["AutoCAD", "Autodesk 3ds Max"],
-    postedAt: "3 days ago", badge: null, tags: [], activelyHiring: true,
-    startDate: "Immediately", duration: "Full-time", applicants: 16, openings: 2, applyBy: "1 May' 26",
-    aboutWork: `As a CAD Designer at Velozity Global Solutions, you will create technical drawings and 3D models.\n\n1. Create detailed CAD drawings using AutoCAD\n2. Develop 3D models using Autodesk 3ds Max\n3. Review and revise designs based on feedback\n4. Coordinate with engineering and production teams\n5. Maintain design documentation`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. have 1+ year of CAD experience\n4. are proficient in AutoCAD`,
-    perks: ["Certificate", "5 days a week"],
-    aboutCompany: "Velozity Global Solutions is a product design and engineering firm delivering innovative CAD solutions.",
-    activity: { since: "July 2021", opportunities: 40, hired: 95 }, companyType: null,
-  },
-  {
-    id: 14, title: "Video Creator", company: "Napraj Moving Packing Private Limited", companyLocation: null,
-    salary: "₹ 12,00,000", experience: "No experience required", type: "Work from home",
-    description: "As a Video Creator, you will have the exciting opportunity to showcase your creative talents and make an impact.",
-    skills: ["Video Making"], postedAt: "Just now", badge: "early", tags: ["Fresher Job"], activelyHiring: false,
-    startDate: "Immediately", duration: "Full-time", applicants: 7, openings: 1, applyBy: "30 May' 26",
-    aboutWork: `As a Video Creator at Napraj Moving Packing, you will produce engaging video content.\n\n1. Conceptualize and create video content for social media\n2. Script, shoot, and edit videos\n3. Optimize content for different platforms\n4. Track performance metrics and improve content strategy\n5. Collaborate with the marketing team`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. have passion for video creation\n4. have relevant skills and interests\n* Freshers welcome.`,
-    perks: ["Certificate", "Flexible work hours", "Letter of recommendation"],
-    aboutCompany: "Napraj Moving Packing Private Limited is expanding its digital presence through creative video content.",
-    activity: { since: "March 2022", opportunities: 20, hired: 45 }, companyType: null,
-  },
-  {
-    id: 15, title: "Revit Drafter", company: "ZAR Architectural Prospective Drawings Services Co LLC", companyLocation: null,
-    salary: "₹ 5,00,000 - 6,00,000", experience: "1 year(s)", type: "Work from home",
-    description: "Key responsibilities: 1. Creating BIM (building information model) with Autodesk Revit Software 2. Architectural drafting.",
-    skills: ["AutoCAD", "Autodesk Revit", "BIM (Building Information Modeling)"],
-    postedAt: "3 weeks ago", badge: null, tags: [], activelyHiring: false,
-    startDate: "Immediately", duration: "Full-time", applicants: 33, openings: 2, applyBy: "5 May' 26",
-    aboutWork: `As a Revit Drafter at ZAR Architectural, you will produce high-quality BIM models.\n\n1. Create BIM models using Autodesk Revit\n2. Produce architectural drawings and documentation\n3. Coordinate with architects and project managers\n4. Ensure drawings meet project specifications\n5. Maintain and update drawing sets throughout project lifecycle`,
-    whoCanApply: `1. are available for the work from home job\n2. can start immediately\n3. have 1+ year of Revit experience\n4. have relevant skills and interests`,
-    perks: ["Flexible work hours", "Certificate"],
-    aboutCompany: "ZAR Architectural Prospective Drawings Services Co LLC provides architectural drafting and BIM services to clients worldwide.",
-    activity: { since: "October 2020", opportunities: 60, hired: 180 }, companyType: null,
-  },
-];
+import { jobsData } from './data/jobsData';
 
 // ─── Navbar (reused) ───────────────────────────────────────────────────────────
 const Navbar = () => {
@@ -277,7 +17,7 @@ const Navbar = () => {
         className="text-[#008bdc] font-black text-2xl italic tracking-tighter cursor-pointer"
         onClick={() => navigate('/')}
       >
-        INTERNSHALA
+        CAREERBRIDGE
       </div>
       <div className="hidden md:flex items-center gap-6 text-[14px] font-semibold text-gray-500">
         <button className="hover:text-[#008bdc] flex items-center gap-1">Internships <ChevronDown className="w-4 h-4" /></button>
@@ -310,8 +50,8 @@ const JobDetailPage = () => {
         <Navbar />
         <div className="flex flex-col items-center justify-center py-32 text-gray-400">
           <p className="text-xl font-bold text-gray-600 mb-2">Job not found</p>
-          <button onClick={() => navigate('/jobs/wfh')} className="text-[#008bdc] underline text-sm mt-2">
-            ← Back to WFH Jobs
+          <button onClick={() => navigate('/jobs')} className="text-[#008bdc] underline text-sm mt-2">
+            ← Back to Jobs
           </button>
         </div>
       </div>
@@ -333,7 +73,7 @@ const JobDetailPage = () => {
         <div className="flex items-center gap-1.5 text-[13px] text-gray-500">
           <button onClick={() => navigate('/')} className="hover:text-[#008bdc]">Home</button>
           <ChevronRight className="w-3.5 h-3.5" />
-          <button onClick={() => navigate('/jobs/wfh')} className="hover:text-[#008bdc]">Jobs</button>
+          <button onClick={() => navigate('/jobs')} className="hover:text-[#008bdc]">Jobs</button>
           <ChevronRight className="w-3.5 h-3.5" />
           <span className="text-gray-800 font-medium truncate">{job.title}</span>
         </div>
@@ -507,10 +247,10 @@ const JobDetailPage = () => {
               <h3 className="text-[17px] font-bold text-gray-900 mb-3">About {job.company}</h3>
               <p className="text-[14px] text-gray-700 leading-relaxed">{job.aboutCompany}</p>
 
-              {/* Activity on Internshala */}
+              {/* Activity on CareerBridge */}
               <div className="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
                 <p className="text-[13px] font-bold text-gray-700 mb-3 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#008bdc]" /> Activity on Internshala
+                  <Building2 className="w-4 h-4 text-[#008bdc]" /> Activity on CareerBridge
                 </p>
                 <div className="flex flex-wrap gap-6 text-[13px] text-gray-600">
                   <span className="flex items-center gap-2">

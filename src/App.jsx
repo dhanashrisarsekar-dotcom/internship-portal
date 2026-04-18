@@ -19,7 +19,7 @@ function App() {
               <Route path="/" element={<HeroSection />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<SignupPage />} />
-              <Route path="/jobs/wfh" element={<WFHJobsPage />} />
+              <Route path="/jobs" element={<WFHJobsPage />} />
               <Route path="/jobs/detail/:id" element={<JobDetailPage />} />
               <Route path="/jobs/apply/:id" element={<ApplyForm />} />
           
