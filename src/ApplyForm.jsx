@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import ResumePreview from './ResumePreview';
 import SkillsInput from './components/SkillsInput';
 import HiddenResumeTemplate from './components/HiddenResumeTemplate';
@@ -70,7 +70,7 @@ const Navbar = ({ navigate }) => (
 
       <button className="hover:text-[#008bdc] flex items-center gap-1">Internships <ChevronDown className="w-4 h-4" /></button>
 
-      <button className="hover:text-[#008bdc] flex items-center gap-1">
+      <Link to="/courses" className="hover:text-[#008bdc] flex items-center gap-1">
 
         Courses
 
@@ -78,7 +78,7 @@ const Navbar = ({ navigate }) => (
 
         <ChevronDown className="w-4 h-4" />
 
-      </button>
+      </Link>
 
       <button className="text-[#008bdc] border-b-2 border-[#008bdc] pb-0.5 flex items-center gap-1">
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import {
   Search, ChevronLeft, ChevronRight, ChevronDown,
   Wallet, Briefcase, Bell, Home, Clock, Star, Filter, X
@@ -306,11 +306,11 @@ const WFHJobsPage = () => {
           <button className="hover:text-[#008bdc] flex items-center gap-1">
             Internships <ChevronDown className="w-4 h-4" />
           </button>
-          <button className="hover:text-[#008bdc] flex items-center gap-1">
+          <Link to="/courses" className="hover:text-[#008bdc] flex items-center gap-1">
             Courses
             <span className="ml-1 bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">OFFER</span>
             <ChevronDown className="w-4 h-4" />
-          </button>
+          </Link>
           <button className="text-[#008bdc] border-b-2 border-[#008bdc] pb-0.5 flex items-center gap-1">
             Jobs <ChevronDown className="w-4 h-4" />
           </button>

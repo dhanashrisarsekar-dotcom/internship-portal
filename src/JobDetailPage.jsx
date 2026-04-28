@@ -21,11 +21,11 @@ const Navbar = () => {
       </div>
       <div className="hidden md:flex items-center gap-6 text-[14px] font-semibold text-gray-500">
         <button className="hover:text-[#008bdc] flex items-center gap-1">Internships <ChevronDown className="w-4 h-4" /></button>
-        <button className="hover:text-[#008bdc] flex items-center gap-1">
+        <Link to="/courses" className="hover:text-[#008bdc] flex items-center gap-1">
           Courses
           <span className="ml-1 bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">OFFER</span>
           <ChevronDown className="w-4 h-4" />
-        </button>
+        </Link>
         <button className="text-[#008bdc] border-b-2 border-[#008bdc] pb-0.5 flex items-center gap-1">
           Jobs <ChevronDown className="w-4 h-4" />
         </button>
