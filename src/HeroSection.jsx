@@ -5,9 +5,9 @@ import { jobsData } from './data/jobsData';
 import { internships as newInternshipsData } from './data/internships';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
-import { 
-  Search, ChevronLeft, ChevronRight, Mail, ChevronDown, 
-  MoveUpRight, MapPin, Wallet, Calendar, ExternalLink, TrendingUp 
+import {
+  Search, ChevronLeft, ChevronRight, Mail, ChevronDown,
+  MoveUpRight, MapPin, Wallet, Calendar, ExternalLink, TrendingUp
 } from 'lucide-react';
 
 // ─── Route map: dropdown link text → React Router path ────────────────────────
@@ -24,7 +24,7 @@ const LINK_ROUTES = {
   "Jobs in Gurgaon": "/jobs?location=Gurgaon",
   "Jobs in Noida": "/jobs?location=Noida",
   "Jobs in Jaipur": "/jobs?location=Jaipur",
-  
+
   // Jobs > Top Categories
   "Data Entry Jobs": "/jobs?category=Data Entry",
   "Content Writing Jobs": "/jobs?category=Content Writing",
@@ -139,12 +139,11 @@ const DropdownMenu = ({ data }) => {
         {/* Left Side Menu */}
         <div className="w-[260px] bg-gray-50/50 p-2 border-r border-gray-100">
           {data.categories.map((item, idx) => (
-            <div 
-              key={idx} 
-              onMouseEnter={() => setActiveTab(idx)} 
-              className={`group/item py-3 px-4 text-[14px] font-medium cursor-pointer rounded-lg flex items-center justify-between transition-all ${
-                activeTab === idx ? 'text-[#008bdc] bg-white shadow-sm' : 'text-gray-600 hover:bg-white'
-              }`}
+            <div
+              key={idx}
+              onMouseEnter={() => setActiveTab(idx)}
+              className={`group/item py-3 px-4 text-[14px] font-medium cursor-pointer rounded-lg flex items-center justify-between transition-all ${activeTab === idx ? 'text-[#008bdc] bg-white shadow-sm' : 'text-gray-600 hover:bg-white'
+                }`}
             >
               <div className="flex items-center gap-2">
                 {item.label}
@@ -161,12 +160,12 @@ const DropdownMenu = ({ data }) => {
         <div className="flex-1 p-6 bg-white overflow-y-auto max-h-[500px]">
           <div className="grid grid-cols-1 gap-y-4">
             {data.categories[activeTab]?.links.map((link, idx) => (
-              <div 
+              <div
                 key={idx}
                 onClick={() => handleLinkClick(link)}
                 className={`text-[14px] text-gray-700 transition-colors font-normal
-                  ${LINK_ROUTES[link] 
-                    ? 'hover:text-[#008bdc] cursor-pointer' 
+                  ${LINK_ROUTES[link]
+                    ? 'hover:text-[#008bdc] cursor-pointer'
                     : 'text-gray-400 cursor-default'
                   }`}
               >
@@ -210,7 +209,7 @@ const coursesNavData = {
 
 const CoursesDropdown = () => {
   const [activeCategory, setActiveCategory] = useState("Technology");
-  
+
   return (
     <div className="absolute top-[100%] left-0 pt-2 hidden group-hover:block z-[100]">
       <div className="bg-white shadow-2xl rounded-xl border border-gray-100 flex flex-col overflow-hidden min-w-[600px]">
@@ -218,12 +217,11 @@ const CoursesDropdown = () => {
           {/* Left Side Menu */}
           <div className="w-[200px] bg-gray-50/50 p-3 border-r border-gray-100 flex flex-col gap-1">
             {Object.keys(coursesNavData).map((cat) => (
-              <div 
-                key={cat} 
-                onMouseEnter={() => setActiveCategory(cat)} 
-                className={`py-2.5 px-4 text-[14px] font-bold cursor-pointer rounded-lg flex items-center justify-between transition-all ${
-                  activeCategory === cat ? 'text-[#008bdc] bg-white shadow-sm ring-1 ring-gray-100' : 'text-gray-600 hover:bg-white'
-                }`}
+              <div
+                key={cat}
+                onMouseEnter={() => setActiveCategory(cat)}
+                className={`py-2.5 px-4 text-[14px] font-bold cursor-pointer rounded-lg flex items-center justify-between transition-all ${activeCategory === cat ? 'text-[#008bdc] bg-white shadow-sm ring-1 ring-gray-100' : 'text-gray-600 hover:bg-white'
+                  }`}
               >
                 {cat}
                 <ChevronRight className={`w-4 h-4 transition-opacity ${activeCategory === cat ? 'opacity-100' : 'opacity-0'}`} />
@@ -235,7 +233,7 @@ const CoursesDropdown = () => {
           <div className="flex-1 p-6 bg-white">
             <div className="grid grid-cols-1 gap-y-2">
               {coursesNavData[activeCategory].map((course, idx) => (
-                <Link 
+                <Link
                   key={idx}
                   to={course.link}
                   className="flex items-center gap-3 p-3 rounded-lg text-[14px] text-gray-700 font-medium transition-colors hover:bg-blue-50 hover:text-[#008bdc]"
@@ -247,7 +245,7 @@ const CoursesDropdown = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Link */}
         <div className="bg-gray-50 border-t border-gray-100 p-3 text-center">
           <Link to="/courses" className="text-[#008bdc] font-bold text-[14px] hover:underline flex items-center justify-center gap-1">
@@ -339,7 +337,7 @@ const HeroSection = () => {
       if (response.data === "Login successful!") {
         localStorage.setItem("userEmail", details.email);
         localStorage.setItem("isLoggedIn", "true");
-        navigate('/'); 
+        navigate('/');
         window.location.reload();
       }
     } catch (error) {
@@ -370,8 +368,9 @@ const HeroSection = () => {
     setJobIndex(0);
   }, [activeCategory]);
 
-  const categories = ["Big brands", "Work from home", "Part-time", "MBA", "Engineering", "Media", "Design", "Data Science"];
-  
+  const categories = [""];
+  //Big brands", "Work from home", "Part-time", "MBA", "Engineering", "Media", "Design", "Data Science"
+
   const filteredJobs = jobsData.filter(job => {
     if (activeCategory === "Big brands") return true;
     if (activeCategory === "Work from home") return job.type === "Work from home" || (job.tags && job.tags.includes("Work from home"));
@@ -392,16 +391,16 @@ const HeroSection = () => {
     { id: 5, slug: "machine-learning-ai", title: "Machine Learning with AI", duration: "6 weeks", learners: "28,103", rating: "4.5", icon: "🤖" },
   ];
 
-  const next = (index, setIndex, items, visibleCount) => { 
-    if (index < (items.length + 1) - visibleCount) setIndex(index + 1); 
+  const next = (index, setIndex, items, visibleCount) => {
+    if (index < (items.length + 1) - visibleCount) setIndex(index + 1);
   };
-  const prev = (index, setIndex) => { 
-    if (index > 0) setIndex(index - 1); 
+  const prev = (index, setIndex) => {
+    if (index > 0) setIndex(index - 1);
   };
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-sky-100">
-      
+
       {/* 1. NAVBAR */}
       <nav className="flex items-center justify-between px-6 lg:px-10 py-3 bg-white border-b sticky top-0 z-50">
         <div className="flex items-center space-x-8">
@@ -421,7 +420,7 @@ const HeroSection = () => {
             </div>
             <div className="relative group py-2">
               <Link to="/courses" className="flex items-center hover:text-[#008bdc] px-4">
-                Courses <span className="ml-1 bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">Offer</span> 
+                Courses <span className="ml-1 bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">Offer</span>
                 <ChevronDown className="w-4 h-4 ml-1 group-hover:rotate-180 transition-transform" />
               </Link>
               <CoursesDropdown />
@@ -472,18 +471,17 @@ const HeroSection = () => {
       {/* 3. CONTENT SECTION */}
       <section className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">What are you looking for today?</h2>
-        
+
         {/* Categories bar */}
         <div className="flex space-x-3 mb-16 overflow-x-auto no-scrollbar justify-start md:justify-center">
           {categories.map((cat, i) => (
             <button
               key={i}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 rounded-full border text-[14px] font-bold whitespace-nowrap transition-all ${
-                activeCategory === cat 
-                  ? 'bg-[#008bdc] text-white border-[#008bdc] shadow-md shadow-sky-100' 
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-[#008bdc] hover:text-[#008bdc]'
-              }`}
+              className={`px-6 py-2 rounded-full border text-[14px] font-bold whitespace-nowrap transition-all ${activeCategory === cat
+                ? 'bg-[#008bdc] text-white border-[#008bdc] shadow-md shadow-sky-100'
+                : 'bg-white text-gray-500 border-gray-200 hover:border-[#008bdc] hover:text-[#008bdc]'
+                }`}
             >
               {cat}
             </button>
@@ -495,13 +493,13 @@ const HeroSection = () => {
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl font-bold text-gray-800">Internships</h3>
             <Link to="/internships" className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline">
-              View all internships <ChevronRight className="w-4 h-4"/>
+              View all internships <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
-          <SliderTemplate 
-            items={internships} index={internIndex} visibleSlides={visibleSlides} 
-            next={() => next(internIndex, setInternIndex, internships, visibleSlides)} 
-            prev={() => prev(internIndex, setInternIndex)} type="Internship" 
+          <SliderTemplate
+            items={internships} index={internIndex} visibleSlides={visibleSlides}
+            next={() => next(internIndex, setInternIndex, internships, visibleSlides)}
+            prev={() => prev(internIndex, setInternIndex)} type="Internship"
           />
         </div>
 
@@ -515,13 +513,13 @@ const HeroSection = () => {
               onClick={() => navigate('/jobs')}
               className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline"
             >
-              View all jobs <ChevronRight className="w-4 h-4"/>
+              View all jobs <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          <SliderTemplate 
-            items={jobs} index={jobIndex} visibleSlides={visibleSlides} 
-            next={() => next(jobIndex, setJobIndex, jobs, visibleSlides)} 
-            prev={() => prev(jobIndex, setJobIndex)} type="Job" 
+          <SliderTemplate
+            items={jobs} index={jobIndex} visibleSlides={visibleSlides}
+            next={() => next(jobIndex, setJobIndex, jobs, visibleSlides)}
+            prev={() => prev(jobIndex, setJobIndex)} type="Job"
           />
         </div>
 
@@ -533,8 +531,8 @@ const HeroSection = () => {
           </div>
           <div className="relative group">
             <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-500 ease-out" 
+              <div
+                className="flex transition-transform duration-500 ease-out"
                 style={{ transform: `translateX(-${courseIndex * (100 / courseVisibleSlides)}%)` }}
               >
                 {certificationCourses.map((course) => (
@@ -567,14 +565,14 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-            <button 
-              onClick={() => prev(courseIndex, setCourseIndex)} 
+            <button
+              onClick={() => prev(courseIndex, setCourseIndex)}
               className={`absolute -left-4 top-1/2 bg-white shadow-xl rounded-full p-2.5 z-10 border border-gray-100 ${courseIndex === 0 ? 'invisible' : ''}`}
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <button 
-              onClick={() => next(courseIndex, setCourseIndex, certificationCourses, courseVisibleSlides)} 
+            <button
+              onClick={() => next(courseIndex, setCourseIndex, certificationCourses, courseVisibleSlides)}
               className={`absolute -right-4 top-1/2 bg-white shadow-xl rounded-full p-2.5 z-10 border border-gray-100 ${courseIndex >= certificationCourses.length + 1 - courseVisibleSlides ? 'invisible' : ''}`}
             >
               <ChevronRight className="w-5 h-5" />
@@ -605,12 +603,12 @@ const SliderTemplate = ({ items, index, visibleSlides, next, prev, type }) => (
               <h4 className="font-bold text-[16px] text-gray-800 mb-1">{item.title}</h4>
               <p className="text-gray-400 text-[13px] font-medium mb-6">{item.company}</p>
               <div className="space-y-3 text-[13px] text-gray-600 mt-auto pt-4 border-t border-gray-50">
-                <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-gray-300"/> {item.location || item.companyLocation || 'Work from home'}</div>
-                <div className="flex items-center gap-2"><Wallet className="w-3.5 h-3.5 text-gray-300"/> {item.salary || item.stipend}</div>
+                <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-gray-300" /> {item.location || item.companyLocation || 'Work from home'}</div>
+                <div className="flex items-center gap-2"><Wallet className="w-3.5 h-3.5 text-gray-300" /> {item.salary || item.stipend}</div>
               </div>
               <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-50">
                 <span className="bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 rounded font-bold uppercase">{type}</span>
-                <Link to={type === 'Job' ? `/jobs/detail/${item.id}` : type === 'Internship' ? `/internships/${item.id}` : '#'} className="text-[#008bdc] font-bold text-[13px] flex items-center">View details <ChevronRight className="w-4 h-4 ml-0.5"/></Link>
+                <Link to={type === 'Job' ? `/jobs/detail/${item.id}` : type === 'Internship' ? `/internships/${item.id}` : '#'} className="text-[#008bdc] font-bold text-[13px] flex items-center">View details <ChevronRight className="w-4 h-4 ml-0.5" /></Link>
               </div>
             </div>
           </div>
@@ -618,10 +616,10 @@ const SliderTemplate = ({ items, index, visibleSlides, next, prev, type }) => (
       </div>
     </div>
     <button onClick={prev} className={`absolute -left-4 top-1/2 -translate-y-1/2 bg-white shadow-lg border border-gray-100 rounded-full p-2.5 z-10 ${index === 0 ? 'invisible' : ''}`}>
-      <ChevronLeft className="w-5 h-5"/>
+      <ChevronLeft className="w-5 h-5" />
     </button>
     <button onClick={next} className={`absolute -right-4 top-1/2 -translate-y-1/2 bg-white shadow-lg border border-gray-100 rounded-full p-2.5 z-10 ${index >= items.length - visibleSlides ? 'invisible' : ''}`}>
-      <ChevronRight className="w-5 h-5"/>
+      <ChevronRight className="w-5 h-5" />
     </button>
   </div>
 );
