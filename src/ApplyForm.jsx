@@ -1,4 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+/*
+  HOW TO SET UP EMAILJS (one-time setup):
+  1. Go to https://www.emailjs.com and create a free account
+  2. Add a new Email Service → connect your Gmail → copy the Service ID
+  3. Create a new Email Template with these variables:
+       {{to_name}}         - applicant full name
+       {{to_email}}        - applicant email (set as "To Email" in template)
+       {{job_title}}       - position applied for
+       {{company_name}}    - company name
+       {{application_id}}  - unique application reference
+       {{application_date}}- date of application
+  4. Copy the Template ID
+  5. Go to Account → copy your Public Key
+  6. Replace YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, YOUR_PUBLIC_KEY in this file
+  Free plan: 200 emails/month — enough for development and small scale
+*/
 
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import ResumePreview from './ResumePreview';
@@ -8,9 +25,9 @@ import html2pdf from 'html2pdf.js';
 import emailjs from '@emailjs/browser';
 import {
 
-  ChevronDown, ChevronRight, X, Search, Check, Info,
+  ChevronDown, ChevronRight, ChevronLeft, X, Search, Check, Info,
 
-  Phone, Mail, User, MapPin, Plus
+  Phone, Mail, User, MapPin, Plus, Briefcase
 
 } from 'lucide-react';
 
@@ -760,56 +777,28 @@ const Step3Form = ({ form, setForm }) => {
 
 // ─── Step 4: Success ───────────────────────────────────────────────────────────
 
-const Step4 = ({ job, navigate }) => (
-
-  <div className="text-center py-12">
-
-    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-
-      <Check className="w-10 h-10 text-green-500" strokeWidth={2.5} />
-
-    </div>
-
-    <h2 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted! 🎉</h2>
-
-    <p className="text-gray-500 text-[15px] mb-2">
-
-      You've successfully applied for <span className="font-semibold text-gray-800">{job?.title}</span>
-
-    </p>
-
-    <p className="text-gray-400 text-[13px] mb-8">at {job?.company}</p>
-
-    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-
-      <button
-
-        onClick={() => navigate('/jobs')}
-
-        className="px-8 py-3 border-2 border-[#008bdc] text-[#008bdc] rounded-lg font-bold text-[14px] hover:bg-blue-50 transition"
-
-      >
-
-        Browse more jobs
-
-      </button>
-
-      <button
-
-        onClick={() => navigate('/')}
-
-        className="px-8 py-3 bg-[#008bdc] text-white rounded-lg font-bold text-[14px] hover:bg-[#0079c0] transition"
-
-      >
-
-        Go to Home
-
-      </button>
-
-    </div>
-
+const Step4 = ({ job, form, applicationId, emailError, emailErrorDetails }) => (
+  <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+    <div className="text-6xl mb-4">🎉</div>
+    <h2 className="text-2xl font-bold text-gray-800 mb-2">Application Submitted!</h2>
+    <p className="text-gray-500 mb-1">You applied for <span className="font-semibold text-blue-600">{job.title}</span> at <span className="font-semibold">{job.company}</span></p>
+    <p className="text-sm text-gray-400 mb-2">Application ID: <span className="font-mono font-semibold">{applicationId}</span></p>
+    {emailError ? (
+      <div className="mb-4">
+        <p className="text-sm text-amber-500 mb-1">⚠️ Confirmation email could not be sent. Please save your Application ID.</p>
+        <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded max-w-sm mx-auto">
+          ⚠️ Email failed: {emailErrorDetails}<br/>
+          <span className="text-gray-400">Check browser console for full details</span>
+        </div>
+      </div>
+    ) : (
+      <p className="text-sm text-green-600 mb-4">✅ A confirmation email has been sent to {form.email}</p>
+    )}
+    <p className="text-gray-400 text-sm mb-6">Our team will review your application within 3–5 business days.</p>
+    <Link to="/jobs" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+      Browse More Jobs
+    </Link>
   </div>
-
 );
 
 
@@ -858,6 +847,34 @@ const ApplyForm = () => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [applicationId, setApplicationId] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorDetails, setEmailErrorDetails] = useState('');
+
+  const SERVICE_ID = 'YOUR_SERVICE_ID';    // ← REPLACE with your EmailJS Service ID
+  const TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // ← REPLACE with your EmailJS Template ID
+  const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';    // ← REPLACE with your EmailJS Public Key
+
+  // Temporary test send to verify credentials
+  useEffect(() => {
+    emailjs.send(
+      SERVICE_ID,
+      TEMPLATE_ID,
+      {
+        to_name: 'Test User',
+        to_email: 'your-own-email@gmail.com',  // ← put your own email here to test
+        job_title: 'Test Job',
+        company_name: 'Test Company',
+        application_id: 'CB000000',
+        application_date: new Date().toLocaleDateString()
+      },
+      { publicKey: PUBLIC_KEY }
+    ).then(
+      () => console.log('✅ EmailJS test send SUCCESS'),
+      (err) => console.error('❌ EmailJS test send FAILED:', err)
+    );
+  }, []);
 
 
 
@@ -944,6 +961,43 @@ const ApplyForm = () => {
     return data.secure_url;
   }
 
+  const sendConfirmationEmail = async (formData, jobTitle, companyName) => {
+    if (!formData.email || !formData.email.includes('@')) {
+      throw new Error('Invalid email address in form data');
+    }
+
+    const applicationId = 'CB' + Math.floor(100000 + Math.random() * 900000);
+    const today = new Date().toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    const templateParams = {
+      to_name: formData.firstName + ' ' + formData.lastName,
+      to_email: formData.email,
+      job_title: jobTitle,
+      company_name: companyName,
+      application_id: applicationId,
+      application_date: today,
+      reply_to: 'careers@careerbridge.in'
+    };
+
+    console.log('Sending email with params:', {
+      service_id: SERVICE_ID,
+      template_id: TEMPLATE_ID,
+      public_key: PUBLIC_KEY,
+      templateParams
+    });
+
+    await emailjs.send(
+      SERVICE_ID,
+      TEMPLATE_ID,
+      templateParams,
+      { publicKey: PUBLIC_KEY }
+    );
+
+    return applicationId;
+  };
+
   const handleNext = async () => {
     if (!validate()) return;
 
@@ -953,42 +1007,28 @@ const ApplyForm = () => {
       setIsSubmitting(true);
       try {
         const element = document.getElementById("pdf-content");
-        const pdfBlob = await html2pdf().from(element).outputPdf("blob");
-        const pdfFile = new File([pdfBlob], "generated_resume.pdf");
-
-        const generatedURL = await uploadFile(pdfFile);
-
-        let uploadedURL = null;
+        if (element) {
+          const pdfBlob = await html2pdf().from(element).outputPdf("blob");
+          const pdfFile = new File([pdfBlob], "generated_resume.pdf");
+          await uploadFile(pdfFile);
+        }
         if (form.resumeFile) {
-          uploadedURL = await uploadFile(form.resumeFile);
+          await uploadFile(form.resumeFile);
         }
 
-        console.log("Generated URL:", generatedURL);
-        console.log("Uploaded URL:", uploadedURL);
-
-        const response = await emailjs.send(
-          "service_44dlkrp",
-          "template_v0w8yae",
-          {
-            name: form.firstName + " " + form.lastName,
-            email: form.email,
-            phone: form.phone,
-            job: job.title,
-            message: form.about,
-
-            generated_resume_link: generatedURL,
-            uploaded_resume_link: uploadedURL || "Not provided"
-          },
-          "bfhrbOdIKAgIkJnUL"
-        );
-
-        console.log("SUCCESS:", response);
+        const appId = await sendConfirmationEmail(form, job.title, job.company);
+        setApplicationId(appId);
+        setSubmitted(true);
         setStep(5); // go to success
       } catch (error) {
-        console.error("EMAIL ERROR FULL:", error);
-        console.error("STATUS:", error?.status);
-        console.error("TEXT:", error?.text);
-        alert("Email failed: " + (error?.text || "Unknown error"));
+        console.error('EmailJS error status:', error?.status);
+        console.error('EmailJS error text:', error?.text);
+        console.error('Full error object:', JSON.stringify(error));
+        
+        setEmailErrorDetails(error?.text || error?.message || 'Unknown error');
+        setSubmitted(true);
+        setEmailError(true);
+        setStep(5);
       } finally {
         setIsSubmitting(false);
       }
@@ -1006,78 +1046,30 @@ const ApplyForm = () => {
 
 
   return (
-
-    <div className="min-h-screen bg-gray-50 font-sans">
-
-      <Navbar navigate={navigate} />
-
-
-
-      {/* Progress bar */}
-
-      {step <= TOTAL_STEPS && (
-
-        <div className="max-w-3xl mx-auto px-4 pt-6">
-
-          <ProgressBar step={step} total={TOTAL_STEPS} />
-
-        </div>
-
-      )}
-
-
-
-      {/* Job context banner */}
-
-      {job && step <= TOTAL_STEPS && (
-
-        <div className="max-w-3xl mx-auto px-4 mt-4">
-
-          <div className="border border-[#008bdc]/30 bg-blue-50/50 rounded-xl px-4 py-3 flex items-center gap-2 text-[13px] text-gray-700">
-
-            <Info className="w-4 h-4 text-[#008bdc] flex-shrink-0" />
-
-            <span>
-
-              Applying to <span className="font-semibold text-gray-900">{job.title}</span> Job
-
-              {job.companyLocation ? ` in ${job.companyLocation}` : ' (Work from home)'}
-              {' '}at <span className="font-semibold text-gray-900">{job.company}</span>
-
-            </span>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-
-      {/* Form card */}
-
-      <div className="max-w-3xl mx-auto px-4 py-8">
-
-
-
-        {step <= TOTAL_STEPS && (
-
-          <>
-
-            {/* Greeting */}
-
-            <div className="text-center mb-8">
-
-              <p className="text-[18px] text-gray-600">Hi there! 👋</p>
-
-              <h1 className="text-3xl font-bold text-gray-900">Let's get started</h1>
-
+    <div className="min-h-screen bg-gray-50 py-12 px-6 font-sans">
+      <div className="max-w-3xl mx-auto">
+        <Link to={`/jobs/detail/${id}`} className="inline-flex items-center text-gray-500 hover:text-blue-600 mb-6 font-medium transition-colors">
+          <ChevronLeft className="w-4 h-4 mr-2" /> Back to job
+        </Link>
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          {step <= TOTAL_STEPS && (
+            <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-8 text-white relative overflow-hidden">
+              <div className="relative z-10">
+                <span className="text-blue-100 font-bold mb-2 block text-sm uppercase tracking-wider">{job.company}</span>
+                <h1 className="text-3xl font-extrabold mb-2 leading-tight">Apply for {job.title}</h1>
+                <p className="text-blue-100 font-medium">Submit your details below to stand out.</p>
+              </div>
+              <Briefcase className="absolute -right-10 -bottom-10 w-48 h-48 text-white opacity-10" />
             </div>
+          )}
 
-
-
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8">
-
+          <div className="p-8">
+        {step <= TOTAL_STEPS && (
+          <>
+            {/* Progress bar */}
+            <div className="mb-6">
+              <ProgressBar step={step} total={TOTAL_STEPS} />
+            </div>
               {/* Step indicator */}
 
               <div className="flex items-center gap-2 mb-6 text-[13px] text-gray-400 font-medium">
@@ -1133,21 +1125,14 @@ const ApplyForm = () => {
                 )}
 
                 <button
-
                   onClick={handleNext}
                   disabled={isSubmitting}
-
-                  className={`px-10 py-3 bg-[#008bdc] text-white rounded-lg font-bold text-[14px] transition shadow-sm shadow-blue-100 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#0079c0]'}`}
-
+                  className={`w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 rounded-lg transition ${step < TOTAL_STEPS ? 'md:w-auto px-10' : ''}`}
                 >
-
-                  {isSubmitting ? 'Sending...' : (step === TOTAL_STEPS ? 'Submit Application' : 'Continue')}
-
+                  {isSubmitting ? 'Submitting...' : (step === TOTAL_STEPS ? 'Submit Application' : 'Continue')}
                 </button>
 
               </div>
-
-            </div>
 
           </>
 
@@ -1155,11 +1140,12 @@ const ApplyForm = () => {
 
 
 
-        {step === 5 && <Step4 job={job} navigate={navigate} />}
+        {step === 5 && <Step4 job={job} form={form} applicationId={applicationId} emailError={emailError} emailErrorDetails={emailErrorDetails} />}
 
         <HiddenResumeTemplate form={form} />
+          </div>
+        </div>
       </div>
-
     </div>
 
   );

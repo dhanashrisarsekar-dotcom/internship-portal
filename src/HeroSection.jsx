@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jobsData } from './data/jobsData';
+import { internships as newInternshipsData } from './data/internships';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import { 
@@ -278,6 +279,41 @@ const HackathonsDropdown = () => {
         <Link to="/hackathons/create" className="px-4 py-2 hover:bg-blue-50 text-[#008bdc] rounded-lg text-[14px] font-bold transition-colors">
           + Create Hackathon
         </Link>
+        <div className="my-1 border-t border-gray-100 hidden"></div>
+      </div>
+    </div>
+  );
+};
+
+const InternshipsDropdown = () => {
+  return (
+    <div className="absolute top-[100%] left-0 pt-2 hidden group-hover:block z-[100]">
+      <div className="bg-white shadow-2xl rounded-xl border border-gray-100 flex flex-col overflow-hidden min-w-[240px] p-2">
+        <Link to="/internships" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors flex justify-between items-center">
+          All Internships <ChevronRight className="w-3 h-3 opacity-50" />
+        </Link>
+        <Link to="/internships?type=work-from-home" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors">
+          Work From Home
+        </Link>
+        <Link to="/internships?type=part-time" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors">
+          Part-Time
+        </Link>
+        <Link to="/internships?type=mba" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors">
+          MBA
+        </Link>
+        <Link to="/internships?type=engineering" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors">
+          Engineering
+        </Link>
+        <Link to="/internships?type=design" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors">
+          Design
+        </Link>
+        <Link to="/internships?type=media" className="px-4 py-2 hover:bg-blue-50 hover:text-[#008bdc] rounded-lg text-[14px] text-gray-700 font-medium transition-colors">
+          Media
+        </Link>
+        <div className="my-1 border-t border-gray-100"></div>
+        <Link to="/internships/post" className="px-4 py-2 hover:bg-blue-50 text-[#008bdc] rounded-lg text-[14px] font-bold transition-colors">
+          + Post an Internship
+        </Link>
       </div>
     </div>
   );
@@ -342,9 +378,7 @@ const HeroSection = () => {
     return job.tags && job.tags.includes(activeCategory);
   });
 
-  const allInternships = jobsData.filter(job => job.duration === "Part-time" || (job.tags && job.tags.includes("Part time")));
-  const catInternships = filteredJobs.filter(job => job.duration === "Part-time" || (job.tags && job.tags.includes("Part time")));
-  const internships = catInternships.length > 0 ? catInternships : allInternships.slice(0, 4);
+  const internships = newInternshipsData.slice(0, 4);
 
   const allJobs = jobsData.filter(job => job.duration !== "Part-time" && !(job.tags && job.tags.includes("Part time")));
   const catJobs = filteredJobs.filter(job => job.duration !== "Part-time" && !(job.tags && job.tags.includes("Part time")));
@@ -374,10 +408,10 @@ const HeroSection = () => {
           <div className="text-[#008bdc] font-black text-2xl italic tracking-tighter cursor-pointer">CAREERBRIDGE</div>
           <div className="hidden lg:flex items-center space-x-1 font-semibold text-gray-600 text-[14px]">
             <div className="relative group py-2">
-              <span className="flex items-center cursor-pointer hover:text-[#008bdc] px-4">
+              <Link to="/internships" className="flex items-center hover:text-[#008bdc] px-4">
                 Internships <ChevronDown className="w-4 h-4 ml-1 group-hover:rotate-180 transition-transform" />
-              </span>
-              <DropdownMenu data={dropdownData.internships} />
+              </Link>
+              <InternshipsDropdown />
             </div>
             <div className="relative group py-2">
               <span className="flex items-center cursor-pointer hover:text-[#008bdc] px-4">
@@ -460,9 +494,9 @@ const HeroSection = () => {
         <div className="mb-24">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl font-bold text-gray-800">Internships</h3>
-            <button className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline">
+            <Link to="/internships" className="text-[#008bdc] font-bold text-sm flex items-center gap-1 hover:underline">
               View all internships <ChevronRight className="w-4 h-4"/>
-            </button>
+            </Link>
           </div>
           <SliderTemplate 
             items={internships} index={internIndex} visibleSlides={visibleSlides} 
@@ -576,7 +610,7 @@ const SliderTemplate = ({ items, index, visibleSlides, next, prev, type }) => (
               </div>
               <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-50">
                 <span className="bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 rounded font-bold uppercase">{type}</span>
-                <Link to={type === 'Job' ? `/jobs/detail/${item.id}` : '#'} className="text-[#008bdc] font-bold text-[13px] flex items-center">View details <ChevronRight className="w-4 h-4 ml-0.5"/></Link>
+                <Link to={type === 'Job' ? `/jobs/detail/${item.id}` : type === 'Internship' ? `/internships/${item.id}` : '#'} className="text-[#008bdc] font-bold text-[13px] flex items-center">View details <ChevronRight className="w-4 h-4 ml-0.5"/></Link>
               </div>
             </div>
           </div>

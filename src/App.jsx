@@ -7,8 +7,10 @@ import WFHJobsPage from './WFHJobsPage';
 import JobDetailPage from './JobDetailPage';
 import ApplyForm from './ApplyForm';
 import ResumePreview from './ResumePreview';
-import InternshipPage from './InternshipPage';
-import InternshipDetail from './InternshipDetail';
+import InternshipsPage from './pages/InternshipsPage';
+import InternshipDetailPage from './pages/InternshipDetailPage';
+import InternshipApplyPage from './pages/InternshipApplyPage';
+import PostInternshipPage from './pages/PostInternshipPage';
 import EducationForm from './Registration/EducationForm';
 import ComputerScienceInternship from './Profile/ComputerScienceInternship';
 import MarketingInternship from './Profile/MarketingInternship';
@@ -49,7 +51,10 @@ function App() {
               <Route path="/jobs/apply/:id" element={<ApplyForm />} />
 
               {/* 1. Main Landing Pages */}
-              <Route path="/internships" element={<InternshipPage />} />
+              <Route path="/internships" element={<InternshipsPage />} />
+              <Route path="/internships/post" element={<PostInternshipPage />} />
+              <Route path="/internships/:id" element={<InternshipDetailPage />} />
+              <Route path="/internships/:id/apply" element={<InternshipApplyPage />} />
 
               {/* 2. CATEGORY ROUTES (Profile Section) */}
               <Route
@@ -75,7 +80,7 @@ function App() {
 
               {/* 4. DYNAMIC DETAIL VIEW */}
               {/* Handles all IDs: 500s (CS), 600s (Marketing), 700s (Finance) */}
-              <Route path="/internship/:id" element={<InternshipDetail />} />
+              {/* Removed broken InternshipDetail route */}
 
               {/* 5. APPLICATION FLOW */}
               <Route path="/education-details" element={<EducationForm />} />
